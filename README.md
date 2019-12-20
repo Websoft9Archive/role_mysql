@@ -29,13 +29,13 @@ mysql_root_password: Websoft9
 
 # 新建数据库
 mysql_databases: []
-  # name: example 
+ # - name: example 
   # collation: utf8_general_ci
   # encoding: utf8mb4
 
 # 新建数据库用户
 mysql_users: []
-  # name: example
+ # - name: example
   # host: locahost
   # password: password
   # priv: 'example.*:ALL,GRANT'
