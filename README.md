@@ -1,38 +1,85 @@
-Role Name
+Ansible Role: MySQL
 =========
 
-A brief description of the role goes here.
+在CentOS或者Ubuntu服务器上安装和配置MySQL 或 MariaDB 
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+无特殊要求,此 role 需要 root 用户权限,可以在playbook全局加入 `become: yes`,或者如下调用 role:
+
+```
+- hosts: database
+  roles:
+    - role: role_mysql
+      become: yes
+```
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+下面列出了可用变量和默认值(请参见"defaults/main.yml"):
+
+```
+# centos版本 5.5 5.6 5.7  Ubuntu支持5.7和8.0
+mysql_version: 5.6       
+
+# MySQL root 密码
+mysql_root_password: Websoft9  
+
+# 新建数据库
+mysql_databases: []
+  # name: example 
+  # collation: utf8_general_ci
+  # encoding: utf8mb4
+
+# 新建数据库用户
+mysql_users: []
+  # name: example
+  # host: locahost
+  # password: password
+  # priv: 'example.*:ALL,GRANT'
+```
+
+
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```
+- hosts: db-servers
+  become: yes
+  vars_files:
+    - vars/main.yml
+  roles:
+    - { role: role_mysql }
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+`vars/main.yml` :
+```
+mysql_version: 5.7
+mysql_root_password: 123456  
+
+mysql_databases: 
+  - name: example 
+    collation: utf8_general_ci
+    encoding: utf8mb4
+
+  
+mysql_users: 
+  - name: example
+    host: locahost
+    password: password
+    priv: 'example.*:ALL,GRANT'
+```
 
 License
 -------
 
 BSD
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).

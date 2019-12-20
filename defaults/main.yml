@@ -3,14 +3,14 @@ mysqlcluster_version: 7.6   # 7.5 7.6 8.0
 mysql_root_password: 123456  
 
 
-mysql_databases:
-  name: 
-  collation:
-  encoding:
-  state:
+mysql_databases: []
+  # - name: example 
+  #   collation: utf8_general_ci
+  #   encoding: utf8mb4
+
   
-mysql_users: 
-  name: 
-  host:
-  password: 
-  priv: 
+mysql_users: []
+  # - name: example
+  #   host: locahost
+  #   password: password
+  #   priv: '*.*:ALL,GRANT'

@@ -9,7 +9,6 @@
     name: "{{ item.name }}"
     collation: "{{ item.collation | default('utf8_general_ci',true) }}"
     encoding: "{{ item.encoding | default('utf8mb4',true) }}"
-    state: "{{ item.state | default('present',true) }}"
   with_items: "{{ mysql_databases }}"
   when: (mysql_databases is defined) and (mysql_databases.name != none)
 
@@ -20,7 +19,6 @@
     host: "{{ item.host | default('localhost',true) }}"
     password: "{{ item.password | default('Websoft9',true) }}"
     priv: "{{ item.priv | default('*.*:ALL,GRANT',true) }}"
-    state: "{{ item.state | default('present',true) }}"
     append_privs: "{{ item.append_privs | default('no',true) }}"
     encrypted: "{{ item.encrypted | default('no',true) }}"
   with_items: "{{ mysql_users }}"
