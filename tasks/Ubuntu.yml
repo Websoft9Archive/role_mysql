@@ -18,28 +18,28 @@
   mysql_user: 
     name: root 
     host: localhost
-    password: "{{mysql_root_password | default('Websoft9',true)}}"
+    password: "{{mysql_root_password}}"
 
 - name: Removes all anyelse user accounts
   mysql_user:
     login_user: root
-    login_password: "{{mysql_root_password | default('Websoft9',true)}}"
+    login_password: "{{mysql_root_password}}"
     name: ''
     host_all: yes
     state: absent
 
 - name: Remove hostname user accounts
-  mysql_user: login_user=root login_password={{mysql_root_password | default('Websoft9',true)}} name='root' host={{ ansible_nodename }} state=absent
+  mysql_user: login_user=root login_password={{mysql_root_password}} name='root' host={{ ansible_nodename }} state=absent
 
 - name: Removes test Databases
   mysql_db:
     login_user: root
-    login_password: "{{mysql_root_password | default('Websoft9',true)}}"
+    login_password: "{{mysql_root_password}}"
     name: test
     state: absent
 
 - name: Removing privileges on test database
-  command: mysql -uroot -p{{mysql_root_password | default('Websoft9',true)}} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'"
+  command: mysql -uroot -p{{mysql_root_password}} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'"
 
 - name: del mysql Automatically generated for Debian scripts.
   file:
@@ -47,11 +47,11 @@
     state: absent
 
 
-- name: Create a MySQL  symbolic link
-  file:
-    src: '{{item.src}}'
-    dest: '{{item.dest}}'
-    state: link
-  with_items:
-    - {src: '/etc/mysql/mysql.conf.d/mysqld.cnf',dest: /data/config/mysqld.cnf}  
-    - {src: '/var/log/mysql',dest: '/data/logs/mysqld'}
+# - name: Create a MySQL  symbolic link
+#   file:
+#     src: '{{item.src}}'
+#     dest: '{{item.dest}}'
+#     state: link
+#   with_items:
+#     - {src: '/etc/mysql/mysql.conf.d/mysqld.cnf',dest: /data/config/mysqld.cnf}  
+#     - {src: '/var/log/mysql',dest: '/data/logs/mysqld'}

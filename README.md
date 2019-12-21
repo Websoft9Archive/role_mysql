@@ -75,7 +75,7 @@ mysql_users:
   - name: example
     host: locahost
     password: password
-    priv: 'example.*:ALL,GRANT'
+    priv: 'example.*:USAGE'
 ```
 
 License
