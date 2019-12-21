@@ -7,7 +7,7 @@
 - name: Create MySQL extra databases 
   mysql_db:
     login_user: root
-    login_password: "{{mysql_root_password}}"
+    login_password: "{{ mysql_root_password | string }}"
     name: "{{ item.name }}"
     encoding: "{{ item.encoding | default('utf8mb4',true) }}"
   with_items: "{{ mysql_databases }}"
@@ -17,13 +17,16 @@
 - name: Create extra Databases User
   mysql_user:
     login_user: root
-    login_password: "{{mysql_root_password}}"
+    login_password: "{{ mysql_root_password | string }}"
     name: "{{ item.name }}"
     host: "{{ item.host | default('localhost',true) }}"
     password: "{{ item.password | default(mysql_root_password,true) }}"
-    priv: "{{ item.priv | default('*.*:ALL',true) }}"
+    priv: "{{ item.priv | default('*.*:USAGE',true) }}"
   with_items: "{{ mysql_users }}"
   when: (mysql_users is defined) and (mysql_users != none) 
+
+
+
 
 
 

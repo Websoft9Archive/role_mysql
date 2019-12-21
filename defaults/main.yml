@@ -13,4 +13,4 @@ mysql_users: []
   # - name: example
   #   host: locahost
   #   password: password
-  #   priv: '*.*:ALL,GRANT'
+  #   priv: 'example.*:USAGE'
