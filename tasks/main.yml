@@ -26,10 +26,6 @@
   when: (mysql_users is defined) and (mysql_users != none) 
 
 
-
-
-
-
 - name: Check MySQL Version
   shell: mysql -V
   register: mysql_ver

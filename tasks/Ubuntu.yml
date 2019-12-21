@@ -17,8 +17,8 @@
 - name: Change MySQL root user password 
   mysql_user: 
     name: root 
-    host: localhost
     password: "{{mysql_root_password}}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
 
 - name: Removes all anyelse user accounts
   mysql_user:
@@ -47,11 +47,11 @@
     state: absent
 
 
-# - name: Create a MySQL  symbolic link
-#   file:
-#     src: '{{item.src}}'
-#     dest: '{{item.dest}}'
-#     state: link
-#   with_items:
-#     - {src: '/etc/mysql/mysql.conf.d/mysqld.cnf',dest: /data/config/mysqld.cnf}  
-#     - {src: '/var/log/mysql',dest: '/data/logs/mysqld'}
+- name: Create a MySQL  symbolic link
+  file:
+    src: '{{item.src}}'
+    dest: '{{item.dest}}'
+    state: link
+  with_items:
+    - {src: '/etc/mysql/mysql.conf.d/mysqld.cnf',dest: /data/config/mysqld.cnf}  
+    - {src: '/var/log/mysql',dest: '/data/logs/mysqld'}
