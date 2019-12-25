@@ -1,11 +1,13 @@
-- import_tasks: CentOS.yml
-  when: ansible_distribution == 'CentOS'
+# - import_tasks: CentOS.yml
+#   when: ansible_distribution == 'CentOS'
 
 - import_tasks: Ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
 
 - name: Create MySQL extra databases 
   mysql_db:
+    login_user: root
+    login_password: '{{mysql_root_password}}'
     name: "{{ item.name }}"
     collation: "{{ item.collation | default('utf8_general_ci',true) }}"
     encoding: "{{ item.encoding | default('utf8mb4',true) }}"
@@ -16,6 +18,8 @@
 
 - name: Create extra Databases User
   mysql_user:
+    login_user: root
+    login_password: '{{mysql_root_password}}'
     name: "{{ item.name }}"
     host: "{{ item.host | default('localhost',true) }}"
     password: "{{ item.password | default('123456',true) }}"
