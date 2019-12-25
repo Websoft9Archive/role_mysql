@@ -42,7 +42,7 @@
     service: name=mysqld state=restarted enabled=yes
 
   - name: Change MySQL57+ root user password 
-    shell: mysqladmin -u root --password="{{ mysql_root_temp_password.stdout }}" password "{{mysql_root_password | default('Websoft9',true)}}"
+    shell: mysqladmin -u root --password="{{ mysql_root_temp_password.stdout }}" password "{{mysql_root_password}}"
 
   when: (mysql_version == 5.7) or (mysql_version == '5.7') or (mysql_version == 8.0) or (mysql_version == '8.0')
 
@@ -50,7 +50,7 @@
   mysql_user: 
     name: root 
     host: "{{ item }}" 
-    password: "{{mysql_root_password | default('Websoft9',true)}}"
+    password: "{{mysql_root_password}}"
   with_items:
     - 127.0.0.1
     - ::1
@@ -61,27 +61,27 @@
 - name: Removes all anyelse user accounts
   mysql_user:
     login_user: root
-    login_password: "{{mysql_root_password | default('Websoft9',true)}}"
+    login_password: "{{mysql_root_password}}"
     name: ''
     host_all: yes
     state: absent
 
 - name: Remove hostname user accounts
-  mysql_user: login_user=root login_password={{mysql_root_password | default('Websoft9',true)}} name='root' host={{ ansible_nodename }} state=absent
+  mysql_user: login_user=root login_password={{mysql_root_password}} name='root' host={{ ansible_nodename }} state=absent
 
 
 - name: Removes test Databases
   mysql_db:
     login_user: root
-    login_password: "{{mysql_root_password | default('Websoft9',true)}}"
+    login_password: "{{mysql_root_password}}"
     name: test
     state: absent
 
 - name: Removing privileges on test database
-  command: mysql -uroot -p{{mysql_root_password | default('Websoft9',true)}} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'"
+  command: mysql -uroot -p{{mysql_root_password}} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'"
 
 - name: FLUSH PRIVILEGES
-  command: mysql -uroot -p{{mysql_root_password | default('Websoft9',true)}} -e "FLUSH PRIVILEGES"
+  command: mysql -uroot -p{{mysql_root_password}} -e "FLUSH PRIVILEGES"
 
 - name: Link MySQL service
   file:
