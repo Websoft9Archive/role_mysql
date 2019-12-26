@@ -25,12 +25,11 @@ Role Variables
 mysql_version: 5.6       
 
 # MySQL root 密码
-mysql_root_password: Websoft9  
+mysql_root_password: 123456  
 
 # 新建数据库
 mysql_databases: []
  # - name: example 
-  # collation: utf8_general_ci
   # encoding: utf8mb4
 
 # 新建数据库用户
@@ -38,7 +37,7 @@ mysql_users: []
  # - name: example
   # host: locahost
   # password: password
-  # priv: '*.*:ALL,GRANT'
+  # priv: 'example.*:ALL'
 ```
 
 
@@ -67,7 +66,6 @@ mysql_root_password: 123456
 
 mysql_databases: 
   - name: example 
-    collation: utf8_general_ci
     encoding: utf8mb4
 
   
@@ -75,7 +73,7 @@ mysql_users:
   - name: example
     host: locahost
     password: password
-    priv: 'example.*:USAGE'
+    priv: 'example.*:ALL'
 ```
 
 License
