@@ -1,5 +1,5 @@
-# - import_tasks: CentOS.yml
-#   when: ansible_distribution == 'CentOS'
+- import_tasks: CentOS.yml
+  when: ansible_distribution == 'CentOS'
 
 - import_tasks: Ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
@@ -25,7 +25,6 @@
     priv: "{{ item.priv | default('*.*:USAGE',true) }}"
   with_items: "{{ mysql_users }}"
   when: (mysql_users is defined) and (mysql_users != none)
-
 
 
 - name: Check MySQL Version

@@ -1,4 +1,3 @@
-
 - name: Import MySQL Repo
   template:
     src: '{{item.src}}'
