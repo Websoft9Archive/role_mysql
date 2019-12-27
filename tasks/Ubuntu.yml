@@ -1,7 +1,7 @@
 ---
 - name: Install MySQL
   apt:  
-    name: [mysql-server,python-pymysql]
+    name: [mysql-server]
 
 - name: Change MySQL Directory
   shell: |

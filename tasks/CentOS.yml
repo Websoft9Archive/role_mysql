@@ -8,7 +8,7 @@
 
 - name: Install MySQL{{ mysql_version }}
   yum: 
-    name: [mysql-community-server,mysql-devel,MySQL-python]
+    name: [mysql-community-server]
 
 - name: Create Databases Directory
   file:
