@@ -7,7 +7,7 @@
     - {src: RPM-GPG-KEY-mysql,dest: /etc/pki/rpm-gpg/}
 
 - name: Install MySQL{{ mysql_version }}
-  dnf: 
+  yum: 
     name: [mysql-community-server]
 
 - name: Create Databases Directory
