@@ -1,4 +1,5 @@
 [mysqld]
+bind-address=0.0.0.0
 datadir=/data/mysql
 socket=/var/lib/mysql/mysql.sock
 {% if mysql_version == 5.7 or mysql_version == '5.7' %}
