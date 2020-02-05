@@ -6,7 +6,8 @@
   when: ansible_os_family == 'RedHat'
 
 - import_tasks: Debian.yml
-  when: ansible_os_family == 'Debian'
+  when: (ansible_os_family == 'Debian' )and (mysql_version  == "5.7" or mysql_version == "8.0")
+
 
 - name: Create MySQL extra databases 
   mysql_db:
