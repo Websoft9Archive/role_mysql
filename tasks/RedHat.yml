@@ -69,9 +69,6 @@
   - name: Change MySQL57+ root user password 
     shell: mysqladmin -u root --password="{{ mysql_root_temp_password.stdout }}" password "{{mysql_root_password}}" --socket=/var/lib/mysql/mysql.sock
 
-
-
-
   when: (mysql_version == 5.7) or (mysql_version == '5.7') or (mysql_version == 8.0) or (mysql_version == '8.0')
 
 - name: Change MySQL{{ mysql_version }} root user password 
