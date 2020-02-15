@@ -51,6 +51,7 @@
     mysql -e "use mysql;update user set authentication_string = '' where user = 'root';"
     {% endif %}
     ps aux | grep "mysqld" |grep -v grep| cut -c 9-15 | xargs kill -9
+    sleep 5
     systemctl restart mysqld
 
 - name: Disable  validate password plugin
