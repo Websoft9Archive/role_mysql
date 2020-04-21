@@ -31,14 +31,17 @@
   with_items: "{{ mysql_users }}"
   when: (mysql_users is defined) and (mysql_users != none)
 
-
-- name: Check MySQL Version
+# display version and service state of components
+- name: Get MySQL version
   shell: mysql -V
-  register: mysql_ver
-  notify: MySQL Version
+  register: check_mysql_version
+  notify: check_mysql_version
+
+- name: Check MySQL Service
+  shell: systemctl status mysql | grep Active*
+  register: check_mysql_service
+  notify: check_mysql_service
 
 #Enable remote connection
 - import_tasks: remote.yml
   when: mysql_remote
-
-
