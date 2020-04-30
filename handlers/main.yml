@@ -1,8 +1,4 @@
----
-- name: check_mysql_version
-  debug:
-    var: check_mysql_version.stdout
-    
+---   
 - name: check_mysql_service
   debug:
     var: check_mysql_service.stdout
