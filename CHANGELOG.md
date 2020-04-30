@@ -3,6 +3,7 @@
 ## To do
 
 1. 双机
+2.mysql_secure_installation
 
 ## Logs
 
