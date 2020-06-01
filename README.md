@@ -35,7 +35,7 @@ Ansible Role: mysql
 | ------------------| ------------------|-----|-----|
 | mysql_version | [ 5.5, 5.6, 5.7, 8.0 ] | 字符串 |是|
 | mysql_root_password | [ "123456"] | 字符串 |是|
-| mysql_remote | [ "true", "false" ] | 字符串 |是|
+| mysql_remote | [ "true", "false" ] | 布尔型 |是|
 | mysql_databases | []   | 字典 |否|
 | mysql_users | []   | 字典 |否|
 
