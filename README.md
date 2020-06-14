@@ -46,6 +46,7 @@ Ansible Role: mysql
 ## Example
 
 ```
+#1 create database wordpress and user wordpress
 mysql_databases:
  - name: wordpress
    encoding: utf8
@@ -54,5 +55,20 @@ mysql_users:
  - name: wordpress
    host: localhost
    priv: 'wordpress.*:ALL'
+
+#1 create database wordpress,joomla and user wordpress,joomla
+mysql_databases:
+ - name: wordpress
+   encoding: utf8
+ - name: joomla
+   encoding: utf8
+ 
+mysql_users:
+ - name: wordpress
+   host: localhost
+   priv: 'wordpress.*:ALL'
+ - name: joomla
+   host: localhost
+   priv: 'joomla.*:ALL'
 ```
 ## FAQ
