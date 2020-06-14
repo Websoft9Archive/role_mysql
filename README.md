@@ -43,6 +43,8 @@ Ansible Role: mysql
 1. mysql_version, mysql_remote  的值在 mysql.yml 中由用户选择输入；
 2. mysql_root_password，mysql_databases，mysql_users 的值在主变量文件[main.yml](https://github.com/Websoft9/ansible-mysql/blob/master/vars/main.yml)中定义。
 
+## Example
+
 ```
 mysql_databases:
  - name: wordpress
@@ -53,26 +55,4 @@ mysql_users:
    host: localhost
    priv: 'wordpress.*:ALL'
 ```
-
-
-## Example
-
-```
-- name: MariadDB
-  hosts: all
-  become: yes
-  become_method: sudo 
-  vars_files:
-    - vars/main.yml 
-
-  roles:
-   - {role: role_common, tags: "role_common"}   
-   - {role: role_cloud, tags: "role_cloud"}
-   - {role: role_mysql, tags: "role_mysql"}
-   - {role: role_docker, tags: "role_docker", when: phpmyadmin_install_docker}
-   - {role: role_docker_phpmyadmin, tags: "role_docker_phpmyadmin", when: phpmyadmin_install_docker}
-   - {role: role_init_password, tags: "role_init_password"}
-   - {role: role_end, tags: "role_end"} 
-```
-
 ## FAQ
