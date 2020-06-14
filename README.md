@@ -56,7 +56,7 @@ mysql_users:
    host: localhost
    priv: 'wordpress.*:ALL'
 
-#1 create database wordpress,joomla and user wordpress,joomla
+#2 create database wordpress,joomla and user wordpress,joomla
 mysql_databases:
  - name: wordpress
    encoding: utf8
