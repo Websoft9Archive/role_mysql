@@ -6,11 +6,12 @@ mysql_root_password: "123456"
 mysql_remote: False
 
 # extra configuration items for customer
-mysql_configuration_extras:
-  - name: innodb_buffer_pool_size
-    value: 2G
-  - name: innodb_log_file_size
-    value: 500M
+
+#mysql_configuration_extras:
+#  - name: innodb_buffer_pool_size
+#    value: 2G
+#  - name: innodb_log_file_size
+#    value: 500M
 
 mysql_databases: []
 #  - name: example 
