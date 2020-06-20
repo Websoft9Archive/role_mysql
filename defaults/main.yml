@@ -4,10 +4,12 @@ mysql_root_password: "123456"
 
 #Enable or disable mysql remote connection  True | False
 mysql_remote: False
-    
 
-
-
+mysql_configure_extras:
+  - name: innodb_buffer_pool_size
+    value: 2G
+  - name: innodb_log_file_size
+    value: 500M
 
 mysql_databases: []
 #  - name: example 
