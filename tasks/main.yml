@@ -30,13 +30,7 @@
     priv: "{{ item.priv | default('*.*:USAGE',true) }}"
   with_items: "{{ mysql_users }}"
   when: (mysql_users is defined) and (mysql_users != none)
-  
-- name: Change MySQL configuration extras
-  lineinfile:
-      dest: /etc/postgresql/{{postgresql_version}}/main/postgresql.conf
-      regexp: "data_directory = '/var/lib/postgresql/{{postgresql_version}}/main'"
-      line: "data_directory = '/data/pgsql'"
-      
+       
 - name: Change MySQL configuration extras
   lineinfile:
     dest: /etc/my.cnf
@@ -45,6 +39,9 @@
     line: "{{ item.name }} = '{{item.value}}'"
   with_items: "{{ mysql_configuration_extras }}"
   when: (mysql_configuration_extras is defined) and (mysql_configuration_extras != none)
+  
+- name: Restart MySQL
+  shell: systemctl restart mysql
 
 # display version and service state of components
 - name: Get MySQL version
