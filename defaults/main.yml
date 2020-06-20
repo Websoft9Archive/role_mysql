@@ -5,6 +5,7 @@ mysql_root_password: "123456"
 #Enable or disable mysql remote connection  True | False
 mysql_remote: False
 
+# extra configuration items for customer
 mysql_configure_extras:
   - name: innodb_buffer_pool_size
     value: 2G
