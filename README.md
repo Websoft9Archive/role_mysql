@@ -72,10 +72,8 @@ mysql_users:
  - name: joomla
    host: localhost
    priv: 'joomla.*:ALL'
-```
 
-### 
-```
+----
 mysql_configuration_extras:
   - name: innodb_buffer_pool_size
     value: 2G
