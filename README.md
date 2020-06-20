@@ -38,6 +38,7 @@ Ansible Role: mysql
 | mysql_remote | [ "true", "false" ] | 布尔型 |是|
 | mysql_databases | []   | 字典 |否|
 | mysql_users | []   | 字典 |否|
+| mysql_configuration_extras | MySQL配置文件 健值对 | 字典队列 | 否 |
 
 注意：
 1. mysql_version, mysql_remote  的值在 mysql.yml 中由用户选择输入；
@@ -45,6 +46,7 @@ Ansible Role: mysql
 
 ## Example
 
+### Init password
 ```
 #1 create database wordpress and user wordpress
 mysql_databases:
@@ -70,5 +72,16 @@ mysql_users:
  - name: joomla
    host: localhost
    priv: 'joomla.*:ALL'
+```
+
+### 
+```
+mysql_configuration_extras:
+  - name: innodb_buffer_pool_size
+    value: 2G
+  - name: innodb_log_file_size
+    value: 500M
+  - name: init-connect
+    value: "'SET NAMES utf8mb8'"
 ```
 ## FAQ
