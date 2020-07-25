@@ -13,6 +13,7 @@
     login_password: '{{mysql_root_password}}'
     name: "{{ item.name }}"
     encoding: "{{ item.encoding | default('utf8mb4',true) }}"
+    collation: "{{ item.collation | default('utf8mb4_general_ci',true) }}"
     state: "{{ item.state | default('present',true) }}"
   with_items: "{{ mysql_databases }}"
   when: (mysql_databases is defined) and (mysql_databases != none)
