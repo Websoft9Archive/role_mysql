@@ -14,4 +14,4 @@
 
 ### Features
 
-* 2020-03-04  增加开启远程连接项
+* 2020-07-25  add collation item when add user
