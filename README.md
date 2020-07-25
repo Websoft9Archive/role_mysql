@@ -64,6 +64,9 @@ mysql_databases:
    encoding: utf8
  - name: joomla
    encoding: utf8
+ - name: joomla
+   encoding: utf8
+   collation: utf8_bin
  
 mysql_users:
  - name: wordpress
