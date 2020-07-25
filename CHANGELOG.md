@@ -14,4 +14,4 @@
 
 ### Features
 
-* 2020-07-25  add collation item when add user
+* 2020-07-25  add collation item when add databases
