@@ -79,7 +79,7 @@
   service: name=mysqld state=restarted enabled=yes
 
 - name: Setting MySQL Password
-  shell: mysqladmin -uroot --password='' password {{mysql_root_password}}
+  shell: mysqladmin -uroot password {{mysql_root_password}}
 
 - name: Removes all anyelse user accounts
   mysql_user:
