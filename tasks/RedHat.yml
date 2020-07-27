@@ -120,7 +120,6 @@
     dest: /usr/lib/systemd/system/mysql.service
     state: link
 
-
 - name: Create a MySQL  symbolic link
   file:
     src: '{{item.src}}'
@@ -129,4 +128,3 @@
   with_items:
     - {src: '/etc/my.cnf',dest: /data/config/my.cnf}  
     - {src: '/var/log/mysqld.log',dest: '/data/logs/mysqld.log'}
-
