@@ -81,7 +81,6 @@
 - name: Setting MySQL Password
   shell: mysqladmin -uroot --password='' password {{mysql_root_password}}
 
-
 - name: Removes all anyelse user accounts
   mysql_user:
     login_user: root
