@@ -49,10 +49,17 @@ Ansible Role: mysql
 ### Init password
 ```
 #1 create database wordpress and user wordpress
+# encoding must set with collation
+# defautl encoding and collation is: utf8mb4/utf8mb4_general_ci
+
 mysql_databases:
  - name: wordpress
-   encoding: utf8
- 
+   
+mysql_databases:
+ - name: wordpress
+   encoding: utf8mb4
+   collation: utf8mb4_general_ci
+   
 mysql_users:
  - name: wordpress
    host: localhost
@@ -61,9 +68,6 @@ mysql_users:
 #2 create database wordpress,joomla and user wordpress,joomla
 mysql_databases:
  - name: wordpress
-   encoding: utf8
- - name: joomla
-   encoding: utf8
  - name: joomla
    encoding: utf8
    collation: utf8_bin
