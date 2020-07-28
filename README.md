@@ -1,7 +1,7 @@
 Ansible Role: mysql
 =========
 
-本 Role 在CentOS或者Ubuntu服务器上安装和配置 mysql。
+This role help you Install MySQL, add databases, add user and set default password
 
 ## Requirements
 
@@ -48,39 +48,46 @@ Ansible Role: mysql
 
 ### Init password
 ```
-#1 create database wordpress and user wordpress
-# encoding must set with collation
-# defautl encoding and collation is: utf8mb4/utf8mb4_general_ci
+#1 Create databases
+# defautl encoding and collation is: utf8mb4/utf8mb4_general_ci, and encoding must set with collation together
 
 mysql_databases:
  - name: wordpress
    
 mysql_databases:
  - name: wordpress
-   encoding: utf8mb4
-   collation: utf8mb4_general_ci
+   encoding: utf8
+   collation: utf8_general_ci
    
-mysql_users:
- - name: wordpress
-   host: localhost
-   priv: 'wordpress.*:ALL'
-
-#2 create database wordpress,joomla and user wordpress,joomla
 mysql_databases:
  - name: wordpress
  - name: joomla
    encoding: utf8
-   collation: utf8_bin
- 
+   collation: utf8_general_ci
+
+#2 Create users
+# default configuration: ( host: localhost | password: 123456 | priv: '*.*:USAGE')
+
+mysql_users:
+ - name: wordpress
+   
+mysql_users:
+ - name: wordpress
+   priv: 'wordpress.*:ALL'
+   
 mysql_users:
  - name: wordpress
    host: localhost
    priv: 'wordpress.*:ALL'
+   
+mysql_users:
+ - name: wordpress
  - name: joomla
    host: localhost
-   priv: 'joomla.*:ALL'
+   priv: 'wordpress.*:ALL'
+   
+#3 Set MySQL my.cnf
 
-----
 mysql_configuration_extras:
   - name: innodb_buffer_pool_size
     value: 2G
@@ -90,3 +97,5 @@ mysql_configuration_extras:
     value: "'SET NAMES utf8mb8'"
 ```
 ## FAQ
+
+
