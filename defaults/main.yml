@@ -3,7 +3,7 @@ mysqlcluster_version: "7.6"   # 7.5 7.6 8.0
 mysql_root_password: "123456" 
 
 #Enable or disable mysql remote connection  True | False
-mysql_remote: False
+mysql_remote: True
 
 # extra configuration items for customer
 
