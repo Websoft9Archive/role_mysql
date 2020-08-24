@@ -7,11 +7,7 @@ mysql_remote: True
 
 # extra configuration items for customer
 
-mysql_configuration_default:
-  - name: innodb_buffer_pool_size
-    value: 2G
-  - name: innodb_log_file_size
-    value: 500M
+
 
 #mysql_configuration_extras:
 #  - name: innodb_buffer_pool_size
@@ -28,3 +24,12 @@ mysql_users: []
 #    host: localhost
 #    password: password
 #    priv: 'example.*:ALL'
+
+
+##-------------------------------------------------------------------------------------
+
+mysql_configuration_default:
+  - name: innodb_buffer_pool_size
+    value: 2G
+  - name: innodb_log_file_size
+    value: 500M
