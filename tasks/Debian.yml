@@ -20,10 +20,7 @@
   shell: |
     systemctl stop mysql
     rm -rf /data/mysql
-    rsync -av /var/lib/mysql /data/
-    sed  -i 's/\/var\/lib\/mysql/\/data\/mysql/'  /etc/mysql/mysql.conf.d/mysqld.cnf
-    echo "alias /var/lib/mysql/ -> /data/mysql/," >> /etc/apparmor.d/tunables/alias
-    systemctl restart apparmor
+    ln -sf /var/lib/mysql /data/
     systemctl start mysql
 
 - name: Change MySQL root user password 
