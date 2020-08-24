@@ -19,14 +19,7 @@
 - name: Install MySQL{{ mysql_version }}
   yum: 
     name: [mysql-community-server]
-
-- name: Create Databases Directory
-  file:
-    path: /data/mysql
-    state: directory
-    owner: mysql
-    group: mysql
-  
+    
 - name: Copy MySQL{{mysql_version}} Configuration
   template: src=my.cnf.jinja2 dest=/etc/my.cnf
 
@@ -128,3 +121,4 @@
   with_items:
     - {src: '/etc/my.cnf',dest: /data/config/my.cnf}  
     - {src: '/var/log/mysqld.log',dest: '/data/logs/mysqld.log'}
+    - {src: '/var/lib/mysql',dest: /data/mysql} 
