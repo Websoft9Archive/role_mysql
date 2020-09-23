@@ -10,7 +10,7 @@
 
 ### Bug Fixes
 
-* 2020-02-14  
+* 2020-02-14  optimize the extra configuration
 
 ### Features
 
