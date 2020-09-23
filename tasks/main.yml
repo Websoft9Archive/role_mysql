@@ -42,6 +42,7 @@
   lineinfile:
     dest: /etc/my.cnf
     regexp: '^{{ item.name }} = *'
+    insertafter: '\[mysqld\]'
     line: "{{ item.name }} = {{item.value}}"
   with_items: "{{ mysql_configuration_extras }}"
   when: (mysql_configuration_extras is defined) and (mysql_configuration_extras != none)
