@@ -7,6 +7,9 @@
 - include: "{{ansible_os_family}}.yml"
 
 #3 configure
+- name: Restart MySQL
+  shell: systemctl stop mysql
+  
 - name: Create MySQL extra databases 
   mysql_db:
     login_user: root
@@ -30,6 +33,10 @@
   with_items: "{{ mysql_users }}"
   when: (mysql_users is defined) and (mysql_users != none)
 
+- name: MySQL5.5 need delelte ib_logfile
+  shell: rm -rf /var/lib/mysql/ib_logfile*
+  when: mysql_version == '5.5'
+  
 - name: Change MySQL configuration default
   lineinfile:
     dest: /etc/my.cnf
@@ -38,7 +45,7 @@
     firstmatch: yes
     line: "{{ item.name }} = {{item.value}}"
   with_items: "{{ mysql_configuration_default }}"
-  when: mysql_configuration_default is defined and mysql_configuration_default != none and mysql_version != "5.5"
+  when: mysql_configuration_default is defined and mysql_configuration_default != none
 
 - name: Change MySQL configuration extras
   lineinfile:
