@@ -32,4 +32,6 @@ pid-file=/var/run/mysqld/mysqld.pid
 validate_password=OFF
 
 ```
+### create user default privellage 
+USAGE => ALL ?
 
