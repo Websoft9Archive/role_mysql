@@ -1,5 +1,5 @@
 ### mysql5.7 default my.cnf
-### min install :[mysqld],[client]
+### min install : [mysqld],[client]
 
 ```
 # For advice on how to change settings please see
