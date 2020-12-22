@@ -1,52 +1,61 @@
 #!/bin/bash
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
-export PATH
-
-# Check if user is root
-if [ $(id -u) != "0" ]; then
-echo -e "————————————————————————————————————————————————————
-[ERROR] It is detected that you do not use root permissions to execute the script.
-Please use the root account to log in to SSH to run this script
-————————————————————————————————————————————————————"
-exit
-
-fi
-
-clear
-echo -e "————————————————————————————————————————————————————
-Please enter the MySQL password you need to set up
-Tip: do not enter a blank password.
-————————————————————————————————————————————————————"
-
-mysql_root_password=""
-read -p "(Please enter the MySQL password you need to set up):" mysql_root_password
-if [ "$mysql_root_password" = "" ]; then
-echo "[ERROR] Please do not enter blank password\n"
-exit 1
-fi
-printf "stop MySQL service......\n"
-systemctl stop mysqld
-printf "Setting the MySQL permissions table\n"
-/usr/bin/mysqld_safe --skip-grant-tables >/dev/null 2>&1 &
-printf "The permissions table is being refreshed and the password is reset\n"
-sleep 10
-/usr/bin/mysql -u root mysql << EOF
-update user set password = Password('$mysql_root_password') where User = 'root';
+echo -e "Begin execution：\n"
+echo -e "Password reset version：mysql 5.5,mysql 5.6,mysql 5.7,mysql 8.0,mariadb 10.1,mariadb 10.2,mariadb 10.3,mariadb 10.4\n"
+sudo systemctl stop mysql;
+sudo sed -i 's/validate_password/#&/' /etc/my.cnf;
+sudo sed -i '/\[mysqld\]/a skip-grant-tables'   /etc/my.cnf;
+sudo systemctl start mysql
+mysql_root_password=$(pwgen -ncCs 15 1)
+result=$(mysql --version)
+flag=0;
+if [[  $result =~ "8.0" ]]
+then
+	mysql -u root mysql << EOF
+	update user set authentication_string='' where user='root';
+	update user set host='localhost' where user='root';
+	flush privileges;
+	ALTER user 'root'@'localhost' IDENTIFIED BY '$mysql_root_password';
+	update user set host='%' where user='root';
+	flush privileges;
 EOF
-
-reset_status=`echo $?`
-if [ $reset_status = "0" ]; then
-printf "The MySQL password has been set up successfully. Now restore the MySQL permissions table\n"
-killall mysqld
-sleep 10
-printf "The MySQL service is being restarted\n"
-systemctl start mysqld
-echo -e "————————————————————————————————————————————————————
-The MySQL password has been reset.
-\033[33m $mysql_root_password \033[0m
-————————————————————————————————————————————————————"
+	flag=1;
+elif [[ $(mysql --version) =~ "10.4"  ]]
+then
+	/usr/bin/mysql -u root mysql << EOF
+	flush privileges;
+	SET password for 'root'@'%'=password('$mysql_root_password');
+	flush privileges;
+EOF
+	flag=1;
+elif [[ $(mysql --version) =~ "5.5" ]] || [[ $(mysql --version) =~ "5.6" ]] || [[ $(mysql --version) =~ "10.1" ]]
+then
+	/usr/bin/mysql -u root mysql << EOF
+	update user set password = Password('$mysql_root_password') where User = 'root';
+EOF
+	flag=1;
+else [[ $(mysql --version) =~ "5.7" ]] || [[ $(mysql --version) =~ "10.2" ]] || [[ $(mysql --version) =~ "10.3" ]]
+	/usr/bin/mysql -u root mysql << EOF
+	update user set authentication_string = Password('$mysql_root_password') where User = 'root';
+EOF
+	flag=1;
+fi
+sudo sed -i 's/skip-grant-tables/#&/' /etc/my.cnf
+sudo sed -i 's/#validate_password/validate_password/' /etc/my.cnf
+sudo systemctl restart mysql
+if [[ $flag == 1 ]]
+then
+	echo -e "End execution！\n"
+	
+	if [[ -s "/credentials/password.txt" ]]
+	then
+		sed -i 's@mysql administrator password:.*@mysql administrator password: '$mysql_root_password'@g' /credentials/password.txt
+	else
+		echo -e "mysql administrator username:root
+mysql administrator password:$mysql_root_password\n\n\n\n" >  /credentials/password.txt
+	fi
+	
+	echo -e "The password of the newly set mysql root account is saved in the /credentials/password.txt directory, and the new password can be viewed through \`cat /credentials/password.txt\`\n"
+	echo -e "The password of the newly set mysql root account is $mysql_root_password"
 else
-echo -e "————————————————————————————————————————————————————
-[ERROR] Unable to reset the MySQL password.
-————————————————————————————————————————————————————"
+	echo "execute failed!!!"
 fi
