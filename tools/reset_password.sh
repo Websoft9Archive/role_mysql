@@ -4,7 +4,7 @@ sudo systemctl stop mysql;
 sudo sed -i 's/validate_password/#&/' /etc/my.cnf;
 sudo sed -i '/\[mysqld\]/a skip-grant-tables'   /etc/my.cnf;
 sudo systemctl start mysql
-mysql_root_password="$(pwgen -nscCy -r "()[]<>,#{}\`\\'\"|/" 15 1)"
+mysql_root_password="$(pwgen -nscCy -r "()[]<>,#{}\`\\'\"|/$&?;^~" 15 1)"
 version=$(mysql --version)
 flag=0;
 if [[  $version =~ "8.0" ]]
