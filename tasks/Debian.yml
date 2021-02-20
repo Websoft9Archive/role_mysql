@@ -8,7 +8,7 @@
     
 - name: import MySQL apt key
   apt_key:
-    keyserver: pgp.mit.edu
+    keyserver: keys.gnupg.net
     id: 5072E1F5
 
 - name: Install MySQL
