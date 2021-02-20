@@ -6,7 +6,7 @@
     src: mysql.list.jinja2
     dest: /etc/apt/sources.list.d/mysql.list
     
-- name: import MySQL apt key
+- name: import MySQL apt key from keys.gnupg.net (do not use pgp.mit.edu which may timeout)
   apt_key:
     keyserver: keys.gnupg.net
     id: 5072E1F5
