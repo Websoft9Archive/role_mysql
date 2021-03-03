@@ -1,2 +1,11 @@
 ---
 # vars file for mysql
+
+mysql_support_version:
+  RedHat:
+    7：['']
+    8: []
+  Debian:
+    16.04: ['5.6', '5.7', '8.0']
+    18.04: ['5.7', '8.0']
+    20.04: ['8.0']
