@@ -3,18 +3,6 @@
   pip:
     name: PyMySQL
 
-- name: test
-  debug: var=mysql_version
-  
-- name: test
-  debug: var=ansible_distribution_major_version
-  
-- name: test2
-  debug: var=mysql_support_version[ansible_os_family]
-
-- name: test3
-  debug: var=mysql_support_version[ansible_os_family][ansible_distribution_major_version]
-  
 - name: Check mysql version support of OS
   fail: msg="The mysql version is not supported on this OS, exit!"
   when: mysql_version not in mysql_support_version[ansible_os_family][ansible_distribution_major_version]
