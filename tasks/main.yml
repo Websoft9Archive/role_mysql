@@ -5,8 +5,11 @@
 
 - name: test
   debug: var=mysql_version
+  
+- name: test2
+  debug: var=mysql_support_version[ansible_os_family]
 
-- name: test
+- name: test3
   debug: var=mysql_support_version[ansible_os_family]ansible_distribution_major_version
   
 - name: Check mysql version support of OS
