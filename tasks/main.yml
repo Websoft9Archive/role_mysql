@@ -13,7 +13,7 @@
   debug: var=mysql_support_version[ansible_os_family]
 
 - name: test3
-  debug: var=mysql_support_version[ansible_os_family].ansible_distribution_major_version
+  debug: var=mysql_support_version[ansible_os_family].{{ansible_distribution_major_version}}
   
 - name: Check mysql version support of OS
   fail: msg="The mysql version is not supported on this OS, exit!"
