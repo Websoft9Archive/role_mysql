@@ -1,6 +1,3 @@
----
-# vars file for mysql
-
 mysql_support_version:
   RedHat:
     7：['5.5', '5.6', '5.7', '8.0']
