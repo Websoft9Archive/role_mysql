@@ -5,9 +5,6 @@
 
 - name: test
   debug: var=mysql_version
-  
-- name: test
-  debug: var=mysql_support_version[ansible_os_family].[ansible_distribution_major_version]
 
 - name: test
   debug: var=mysql_support_version[ansible_os_family][ansible_distribution_major_version]
