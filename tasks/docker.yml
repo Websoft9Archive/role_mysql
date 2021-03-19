@@ -7,3 +7,5 @@ my.cnf 文件需提前创建
 * mysqldump (command line binary)
 
 实现个性化配置：创建用户、创建数据库、修改配置的一致性
+
+安装docker版mysql之前，先判断3306端口是否被占用，如被占用，使用3307
