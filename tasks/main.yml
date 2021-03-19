@@ -3,6 +3,10 @@
   pip:
     name: PyMySQL
 
+- name: Check mysql version support of OS
+  fail: msg="The mysql version is not supported on this OS, exit!"
+  when: mysql_version not in mysql_support_version[ansible_os_family][ansible_distribution_major_version]
+  
 #2 install by OS family    
 - include: "{{ansible_os_family}}.yml"
 

@@ -1,6 +1,9 @@
 - set_fact:
     mysql_socket: /run/mysqld/mysqld.sock
 
+- name: Delete MySQL mysql.list for retry
+  shell: rm -rf /etc/apt/sources.list.d/mysql.list
+
 - name: import MySQL repo
   template:
     src: mysql.list.jinja2

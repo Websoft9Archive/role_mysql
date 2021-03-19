@@ -1,4 +1,11 @@
-mysql_version: "5.7"       # centos版本 5.5 5.6 5.7 8.0  Ubuntu支持5.7和8.0
+# CentOS7 支持 5.5 5.6 5.7 8.0  
+# Ubuntu16 支持5.6,5.7和8.0
+# Ubuntu18 支持5.7和8.0
+# Ubuntu20 支持8.0
+
+mysql_docker: False
+
+mysql_version: "5.7"       
 mysqlcluster_version: "7.6"   # 7.5 7.6 8.0
 mysql_root_password: "123456" 
 
@@ -7,7 +14,7 @@ mysql_remote: True
 
 # extra configuration items for customer
 
-
+mysql_port: "3306"
 
 #mysql_configuration_extras:
 #  - name: innodb_buffer_pool_size
