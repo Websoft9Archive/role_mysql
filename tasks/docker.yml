@@ -1,0 +1,9 @@
+mysql目录：/data/db/mysql{{mysql_version}}  
+my.cnf 文件需提前创建
+安装 [ansible mysql module](https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_db_module.html) 所需的组件
+* MySQLdb (Python 2.x)
+* PyMySQL (Python 2.7 and Python 3.X), or
+* mysql (command line binary)
+* mysqldump (command line binary)
+
+实现个性化配置：创建用户、创建数据库、修改配置的一致性

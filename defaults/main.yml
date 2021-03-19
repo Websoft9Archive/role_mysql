@@ -3,6 +3,8 @@
 # Ubuntu18 支持5.7和8.0
 # Ubuntu20 支持8.0
 
+mysql_docker: False
+
 mysql_version: "5.7"       
 mysqlcluster_version: "7.6"   # 7.5 7.6 8.0
 mysql_root_password: "123456" 

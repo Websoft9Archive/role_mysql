@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+
+  mysql:
+    image: mysql:{{mysql_docker_meta}}
+    restart: always
+    container_name: "mysql{{mysql_version}}"
+    volumes:
+      - /data/db/mysql{{mysql_version}}/data:/var/lib/mysql
+      - /data/db/mysql{{mysql_version}}/my.cnf:/ect/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+
+networks:
+  default:
+    external:
+      name: "apps"
