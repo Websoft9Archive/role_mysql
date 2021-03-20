@@ -35,3 +35,6 @@ validate_password=OFF
 ### create user default privellage 
 USAGE => ALL ?
 
+### volumes path edit
+- /data/db/mysql5.7/my.cnf:/ect/my.cnf => - /data/db/mysql5.7/my.cnf://etc/mysql/conf.d/my.cnf 
+
