@@ -3,19 +3,64 @@
   pip:
     name: PyMySQL
 
-- name: Check mysql version support of OS
-  fail: msg="The mysql version is not supported on this OS, exit!"
-  when: mysql_version not in mysql_support_version[ansible_os_family][ansible_distribution_major_version]
-  
+- block:
+  - name: Check mysql version support of OS
+    fail: msg="The mysql version is not supported on this OS, exit!"
+    when: mysql_version not in mysql_support_version[ansible_os_family][ansible_distribution_major_version]
+    
 #2 install by OS family    
-- include: "{{ansible_os_family}}.yml"
-
+  - include: "{{ansible_os_family}}.yml"
+  when: not mysql_docker
+  
 #3 configure
- 
+- name: Get mysql port 
+  shell: >
+    ss -ntlp |grep 3306 |awk '{print $4}' |cut -d: -f2
+  register: mysql_exists_port
+
+- register: 
+    mysql_port: "{{ (mysql_exists_port |int) +1 }}" 
+  when: (mysql_exist_port is defined) and (mysql_exist_port.stdout != "3306" ) and (mysql_exist_port.stdout is not none )
+
+- block:
+  - name: Create mysql dir
+    file:
+      path: "{{items}}" 
+      state: directory
+      recurse: yes
+    loops: 
+      - /data/db/mysql{{mysql_version}} 
+
+  - name: Create mysql file
+    file:
+      path: "{{items}}" 
+      state: file
+    loops: 
+      - /data/db/mysql{{mysql_version}}/my.cnf 
+
+  - name: Copy docker-compose file
+    template:
+      src: docker-compose.yml
+      dest: /data/db/mysql{{mysql_version}}/docker-compose.yml
+
+  - name: Install Docker version of MySQL
+    shell: |
+      docker-compose up -d
+      sleep 30
+    args:
+      chdir: /data/db/mysql{{mysql_version}}
+  when: mysql_docker
+
+- name: Get the MySQL Container IP
+  shell: docker inspect --format='{{.NetworkSettings.Networks.apps.IPAddress}}' mysql{{mysql_version}}
+  register: mysql_container_ip
+
 - name: Create MySQL extra databases 
   mysql_db:
     login_user: root
+    login_host: "{{ item.host |default('localhost',true) | mysql_docker | ternary('{{mysql_container_ip}}') }}"
     login_password: '{{mysql_root_password}}'
+    login_port: "{{ item.mysql_port | default('3306',true) }}"
     name: "{{ item.name }}"
     encoding: "{{ item.encoding | default('utf8mb4',true) }}"
     collation: "{{ item.collation | default('utf8mb4_general_ci',true) }}"
@@ -26,7 +71,9 @@
 - name: Create extra Databases User
   mysql_user:
     login_user: root
+    login_host: "{{ item.host |default('localhost',true) | mysql_docker | ternary('{{mysql_container_ip}}') }}"
     login_password: '{{mysql_root_password}}'
+    login_port: "{{item.mysql_port}}"
     name: "{{ item.name }}"
     host: "{{ item.host | default('%',true) }}"
     password: "{{ item.password | default('123456',true) }}"
@@ -35,45 +82,47 @@
   with_items: "{{ mysql_users }}"
   when: (mysql_users is defined) and (mysql_users != none)
 
-- name: Stop MySQL
-  shell: systemctl stop mysql
-  
-- name: MySQL5.5 need delelte ib_logfile
-  shell: rm -rf /var/lib/mysql/ib_logfile*
-  when: mysql_version == '5.5'
-  
-- name: Change MySQL configuration default
-  lineinfile:
-    dest: /etc/my.cnf
-    regexp: '^{{ item.name }} = *'
-    insertafter: '\[mysqld\]'
-    firstmatch: yes
-    line: "{{ item.name }} = {{item.value}}"
-  with_items: "{{ mysql_configuration_default }}"
-  when: mysql_configuration_default is defined and mysql_configuration_default != none
+- block:
+  - name: Stop MySQL
+    shell: systemctl stop mysql
+    
+  - name: MySQL5.5 need delelte ib_logfile
+    shell: rm -rf /var/lib/mysql/ib_logfile*
+    when: mysql_version == '5.5'
+    
+  - name: Change MySQL configuration default
+    lineinfile:
+      dest: /etc/my.cnf
+      regexp: '^{{ item.name }} = *'
+      insertafter: '\[mysqld\]'
+      firstmatch: yes
+      line: "{{ item.name }} = {{item.value}}"
+    with_items: "{{ mysql_configuration_default }}"
+    when: mysql_configuration_default is defined and mysql_configuration_default != none
 
-- name: Change MySQL configuration extras
-  lineinfile:
-    dest: /etc/my.cnf
-    regexp: '^{{ item.name }} = *'
-    insertafter: '\[mysqld\]'
-    firstmatch: yes
-    line: "{{ item.name }} = {{item.value}}"
-  with_items: "{{ mysql_configuration_extras }}"
-  when: (mysql_configuration_extras is defined) and (mysql_configuration_extras != none)
-  
-- name: Restart MySQL
-  shell: systemctl restart mysql
+  - name: Change MySQL configuration extras
+    lineinfile:
+      dest: /etc/my.cnf
+      regexp: '^{{ item.name }} = *'
+      insertafter: '\[mysqld\]'
+      firstmatch: yes
+      line: "{{ item.name }} = {{item.value}}"
+    with_items: "{{ mysql_configuration_extras }}"
+    when: (mysql_configuration_extras is defined) and (mysql_configuration_extras != none)
+    
+  - name: Restart MySQL
+    shell: systemctl restart mysql
 
-# display version and service state of components
-- name: Get MySQL version
-  shell: sudo sh -c "mysql -V 1>> /data/logs/install_version.txt"
+  # display version and service state of components
+  - name: Get MySQL version
+    shell: sudo sh -c "mysql -V 1>> /data/logs/install_version.txt"
 
-- name: Check MySQL Service
-  shell: systemctl status mysql | grep Active*
-  register: check_mysql_service
-  notify: check_mysql_service
+  - name: Check MySQL Service
+    shell: systemctl status mysql | grep Active*
+    register: check_mysql_service
+    notify: check_mysql_service
 
-#Enable remote connection
-- import_tasks: remote.yml
-  when: mysql_remote
+  #Enable remote connection
+  - import_tasks: remote.yml
+    when: mysql_remote
+  when: not mysql_docker
