@@ -60,7 +60,7 @@
     login_user: root
     login_host: "{{ item.host |default('localhost',true) | mysql_docker | ternary('{{mysql_container_ip}}') }}"
     login_password: '{{mysql_root_password}}'
-    login_port: "{{ item.mysql_port | default('3306',true) }}"
+    login_port: "{{ item.mysql_port | default('{{mysql_port}}',true) }}"
     name: "{{ item.name }}"
     encoding: "{{ item.encoding | default('utf8mb4',true) }}"
     collation: "{{ item.collation | default('utf8mb4_general_ci',true) }}"
@@ -73,7 +73,7 @@
     login_user: root
     login_host: "{{ item.host |default('localhost',true) | mysql_docker | ternary('{{mysql_container_ip}}') }}"
     login_password: '{{mysql_root_password}}'
-    login_port: "{{item.mysql_port}}"
+    login_port: "{{ item.mysql_port | default('{{mysql_port}}',true) }}"
     name: "{{ item.name }}"
     host: "{{ item.host | default('%',true) }}"
     password: "{{ item.password | default('123456',true) }}"
