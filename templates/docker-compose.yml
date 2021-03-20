@@ -12,7 +12,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "{{mysql_root_password}}"
     ports:
-      - {{mysql_port}}:33060
+      - {{mysql_port}}:3306
 
 networks:
   default:
