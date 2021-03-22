@@ -13,19 +13,21 @@
   when: not mysql_docker
   
 #3 configure
-- name: Get mysql port 
-  shell: >
-    ss -ntlp |grep 3306 |awk '{print $4}' |cut -d: -f2
-  register: mysql_exists_port
+- name: Copy the script that gets the MySQL port
+  template:
+    src: mysql_port_get.sh
+    dest: /tmp/mysql_port_get.sh
 
-- register: 
-    mysql_port: "{{ (mysql_exists_port |int) +1 }}" 
-  when: (mysql_exist_port is defined) and (mysql_exist_port.stdout != "3306" ) and (mysql_exist_port.stdout is not none )
+- name: Get mysql port 
+  shell: bash /tmp/mysql_port_get.sh
+  register: mysql_port
+
+- debug: var=mysql_port.stdout
 
 - block:
   - name: Create mysql dir
     file:
-      path: "{{items}}" 
+      path: "{{item}}" 
       state: directory
       recurse: yes
     loops: 
@@ -33,8 +35,8 @@
 
   - name: Create mysql file
     file:
-      path: "{{items}}" 
-      state: file
+      path: "{{item}}" 
+      state: touch
     loops: 
       - /data/db/mysql{{mysql_version}}/my.cnf 
 
@@ -52,15 +54,17 @@
   when: mysql_docker
 
 - name: Get the MySQL Container IP
-  shell: docker inspect --format='{{.NetworkSettings.Networks.apps.IPAddress}}' mysql{{mysql_version}}
+  shell: docker inspect mysql{{mysql_version}} |jq -r .[].NetworkSettings.Networks.apps.IPAddress 
   register: mysql_container_ip
+
+- debug: var=mysql_container_ip.stdout
 
 - name: Create MySQL extra databases 
   mysql_db:
     login_user: root
-    login_host: "{{ item.host |default('localhost',true) | mysql_docker | ternary('{{mysql_container_ip}}') }}"
+    login_host: "{{ item.host |default('127.0.0.1',true) }}"
     login_password: '{{mysql_root_password}}'
-    login_port: "{{ item.mysql_port | default('{{mysql_port}}',true) }}"
+    login_port: "{{ item.[mysql_port.stdout] | default('[mysql_port.stdout]',true) }}"
     name: "{{ item.name }}"
     encoding: "{{ item.encoding | default('utf8mb4',true) }}"
     collation: "{{ item.collation | default('utf8mb4_general_ci',true) }}"
@@ -71,9 +75,9 @@
 - name: Create extra Databases User
   mysql_user:
     login_user: root
-    login_host: "{{ item.host |default('localhost',true) | mysql_docker | ternary('{{mysql_container_ip}}') }}"
+    login_host: "{{ item.host |default('127.0.0.1',true) }}"
     login_password: '{{mysql_root_password}}'
-    login_port: "{{ item.mysql_port | default('{{mysql_port}}',true) }}"
+    login_port: "{{ item.[mysql_port.stdout] | default('[mysql_port.stdout]',true) }}"
     name: "{{ item.name }}"
     host: "{{ item.host | default('%',true) }}"
     password: "{{ item.password | default('123456',true) }}"
