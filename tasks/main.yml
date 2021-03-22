@@ -30,14 +30,14 @@
       path: "{{item}}" 
       state: directory
       recurse: yes
-    loops: 
-      - /data/db/mysql{{mysql_version}} 
+    loop: 
+      - /data/db/mysql{{mysql_version}}/data
 
   - name: Create mysql file
     file:
       path: "{{item}}" 
       state: touch
-    loops: 
+    loop: 
       - /data/db/mysql{{mysql_version}}/my.cnf 
 
   - name: Copy docker-compose file
