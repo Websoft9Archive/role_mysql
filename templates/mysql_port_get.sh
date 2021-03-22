@@ -1,10 +1,14 @@
 mysql_port=3000
 container_name=($(docker ps | awk '{print $NF}' | sed 1d |sort))
+mysql_container_number=$(docker ps |grep mysql |wc -l)
 
 until [ -n "$mysql_new_port" ] 
 do
- if [[ "${container_name[@]}" =~ "mysql{{mysql_port}}" ]]; then
-   mysql_port=$(docker inspect mysql{{mysql_port}} |jq .[].NetworkSettings.Ports |grep HostPort |cut -d'"' -f4)
+ if [[ $mysql_container_number -eq 0 ]]; then
+   echo {{mysql_port}}
+   exit 0
+ elif [[ "${container_name[@]}" =~ "mysql{{mysql_version}}" ]]; then
+   mysql_port=$(docker inspect mysql{{mysql_version}} |jq .[].NetworkSettings.Ports |grep HostPort |cut -d'"' -f4)
    echo $mysql_port
    exit 0
  else

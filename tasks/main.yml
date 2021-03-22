@@ -24,6 +24,10 @@
 
 - debug: var=mysql_port.stdout
 
+- name: Gets all container names
+  shell: docker ps | awk '{print $NF}' | sed 1d |sort
+  register: container_list_name
+
 - block:
   - name: Create mysql dir
     file:
@@ -38,20 +42,20 @@
       path: "{{item}}" 
       state: touch
     loop: 
-      - /data/db/mysql{{mysql_version}}/my.cnf 
+      - /data/db/mysql{{mysql_version}}/data/my.cnf
 
   - name: Copy docker-compose file
     template:
       src: docker-compose.yml
       dest: /data/db/mysql{{mysql_version}}/docker-compose.yml
 
-  - name: Install Docker version of MySQL
+  - name: Install Container version of MySQL
     shell: |
       docker-compose up -d
       sleep 30
     args:
       chdir: /data/db/mysql{{mysql_version}}
-  when: mysql_docker
+  when: mysql_docker 
 
 - name: Get the MySQL Container IP
   shell: docker inspect mysql{{mysql_version}} |jq -r .[].NetworkSettings.Networks.apps.IPAddress 
@@ -64,7 +68,7 @@
     login_user: root
     login_host: "{{ item.host |default('127.0.0.1',true) }}"
     login_password: '{{mysql_root_password}}'
-    login_port: "{{ item.[mysql_port.stdout] | default('[mysql_port.stdout]',true) }}"
+    login_port: "{{ mysql_port.stdout }}"
     name: "{{ item.name }}"
     encoding: "{{ item.encoding | default('utf8mb4',true) }}"
     collation: "{{ item.collation | default('utf8mb4_general_ci',true) }}"
@@ -77,7 +81,7 @@
     login_user: root
     login_host: "{{ item.host |default('127.0.0.1',true) }}"
     login_password: '{{mysql_root_password}}'
-    login_port: "{{ item.[mysql_port.stdout] | default('[mysql_port.stdout]',true) }}"
+    login_port: "{{ mysql_port.stdout }}"
     name: "{{ item.name }}"
     host: "{{ item.host | default('%',true) }}"
     password: "{{ item.password | default('123456',true) }}"
