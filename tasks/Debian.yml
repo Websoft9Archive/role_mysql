@@ -82,6 +82,6 @@
 - block:
   - name: Install MySQL Client
     apt:  
-      name: [mysql-clinet]
+      name: [mysql-client]
       update_cache: yes
   when: mysql_docker
