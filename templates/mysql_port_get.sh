@@ -1,4 +1,4 @@
-mysql_port=3000
+mysql_port=3306
 container_name=($(docker ps | awk '{print $NF}' | sed 1d |sort))
 mysql_container_number=$(docker ps |grep mysql |wc -l)
 

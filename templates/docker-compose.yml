@@ -8,7 +8,7 @@ services:
     container_name: "mysql{{mysql_version}}"
     volumes:
       - /data/db/mysql{{mysql_version}}/data:/var/lib/mysql
-      - /data/db/mysql{{mysql_version}}/my.cnf:/ect/my.cnf.d/my.cnf
+      - /data/db/mysql{{mysql_version}}/my.cnf:/etc/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: "{{mysql_root_password}}"
     ports:

@@ -3,46 +3,44 @@
   pip:
     name: PyMySQL
 
-- block:
-  - name: Check mysql version support of OS
-    fail: msg="The mysql version is not supported on this OS, exit!"
-    when: mysql_version not in mysql_support_version[ansible_os_family][ansible_distribution_major_version]
+- name: Check mysql version support of OS
+  fail: msg="The mysql version is not supported on this OS, exit!"
+  when: mysql_version not in mysql_support_version[ansible_os_family][ansible_distribution_major_version]
+  when: not mysql_docker
     
 #2 install by OS family    
-  - include: "{{ansible_os_family}}.yml"
-  when: not mysql_docker
-  
+- include: "{{ansible_os_family}}.yml"
+
+- block:  
 #3 configure
-- name: Copy the script that gets the MySQL port
-  template:
-    src: mysql_port_get.sh
-    dest: /tmp/mysql_port_get.sh
+  - name: Copy the script that gets the MySQL port
+    template:
+      src: mysql_port_get.sh
+      dest: /tmp/mysql_port_get.sh
 
-- name: Get mysql port 
-  shell: bash /tmp/mysql_port_get.sh
-  register: mysql_port
+  - name: Get mysql port 
+    shell: bash /tmp/mysql_port_get.sh
+    register: mysql_port
 
-- debug: var=mysql_port.stdout
+  - debug: var=mysql_port.stdout
 
-- name: Gets all container names
-  shell: docker ps | awk '{print $NF}' | sed 1d |sort
-  register: container_list_name
-
-- block:
-  - name: Create mysql dir
-    file:
-      path: "{{item}}" 
-      state: directory
-      recurse: yes
-    loop: 
-      - /data/db/mysql{{mysql_version}}/data
+  - name: Gets all container names
+    shell: docker ps | awk '{print $NF}' | sed 1d |sort
+    register: container_list_name
 
   - name: Create mysql file
     file:
       path: "{{item}}" 
       state: touch
     loop: 
-      - /data/db/mysql{{mysql_version}}/data/my.cnf
+      - /data/db/mysql{{mysql_version}}/my.cnf
+
+  - nmme: Get mysql configure file
+    shell: |
+      docker run -itd mysql/{{mysql_docker_meta[mysql_version]}} --name mysql{{mysql_version}}
+      docker cp mysql{{mysql_version}}:/etc/my.cnf /data/db/mysql{{mysql_version}}/my.cnf
+      docker stop mysql{{mysql_version}}
+      docker rm mysql{{mysql_version}}
 
   - name: Copy docker-compose file
     template:
@@ -55,6 +53,7 @@
       sleep 30
     args:
       chdir: /data/db/mysql{{mysql_version}}
+      
   when: mysql_docker 
 
 - name: Get the MySQL Container IP
@@ -97,27 +96,29 @@
   - name: MySQL5.5 need delelte ib_logfile
     shell: rm -rf /var/lib/mysql/ib_logfile*
     when: mysql_version == '5.5'
-    
-  - name: Change MySQL configuration default
-    lineinfile:
-      dest: /etc/my.cnf
-      regexp: '^{{ item.name }} = *'
-      insertafter: '\[mysqld\]'
-      firstmatch: yes
-      line: "{{ item.name }} = {{item.value}}"
-    with_items: "{{ mysql_configuration_default }}"
-    when: mysql_configuration_default is defined and mysql_configuration_default != none
+  when: not mysql_docker
 
-  - name: Change MySQL configuration extras
-    lineinfile:
-      dest: /etc/my.cnf
-      regexp: '^{{ item.name }} = *'
-      insertafter: '\[mysqld\]'
-      firstmatch: yes
-      line: "{{ item.name }} = {{item.value}}"
-    with_items: "{{ mysql_configuration_extras }}"
-    when: (mysql_configuration_extras is defined) and (mysql_configuration_extras != none)
-    
+- name: Change MySQL configuration default
+  lineinfile:
+    dest: /etc/my.cnf
+    regexp: '^{{ item.name }} = *'
+    insertafter: '\[mysqld\]'
+    firstmatch: yes
+    line: "{{ item.name }} = {{item.value}}"
+  with_items: "{{ mysql_configuration_default }}"
+  when: mysql_configuration_default is defined and mysql_configuration_default != none
+
+- name: Change MySQL configuration extras
+  lineinfile:
+    dest: /etc/my.cnf "{{ (mysql_docker) | ternary('[/data/db/mysql{{mysql_version}}/my.cnf]','/etc/my.cnf') }}"
+    regexp: '^{{ item.name }} = *'
+    insertafter: '\[mysqld\]'
+    firstmatch: yes
+    line: "{{ item.name }} = {{item.value}}"
+  with_items: "{{ mysql_configuration_extras }}"
+  when: (mysql_configuration_extras is defined) and (mysql_configuration_extras != none)
+
+- block:    
   - name: Restart MySQL
     shell: systemctl restart mysql
 
@@ -134,3 +135,4 @@
   - import_tasks: remote.yml
     when: mysql_remote
   when: not mysql_docker
+  
