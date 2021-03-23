@@ -139,5 +139,5 @@
     shell: docker restart mysql{{mysql_version}}
 
   - name: Check MySQL version
-    shell: sudo echo "{{mysql_version}}" |tee -a /data/logs/install_version.txt
+    shell: sudo echo "mysql_version: {{mysql_version}}" |tee -a /data/logs/install_version.txt
   when: mysql_docker
