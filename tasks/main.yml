@@ -100,7 +100,7 @@
 
 - name: Change MySQL configuration default
   lineinfile:
-    dest: /etc/my.cnf
+    dest: "{{ (mysql_docker) | ternary('[/data/db/mysql{{mysql_version}}/my.cnf]','/etc/my.cnf') }}"
     regexp: '^{{ item.name }} = *'
     insertafter: '\[mysqld\]'
     firstmatch: yes
@@ -110,7 +110,7 @@
 
 - name: Change MySQL configuration extras
   lineinfile:
-    dest: /etc/my.cnf "{{ (mysql_docker) | ternary('[/data/db/mysql{{mysql_version}}/my.cnf]','/etc/my.cnf') }}"
+    dest: "{{ (mysql_docker) | ternary('[/data/db/mysql{{mysql_version}}/my.cnf]','/etc/my.cnf') }}"
     regexp: '^{{ item.name }} = *'
     insertafter: '\[mysqld\]'
     firstmatch: yes
