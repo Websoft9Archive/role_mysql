@@ -14,7 +14,7 @@
 #3 configure
 - block: 
   - set_fact:
-      mysql_docker_configure_file: '/data/db/mysql{{mysql_version}}/my.cnf'
+     mysql_docker_configure_file: '/data/db/mysql{{mysql_version}}/my.cnf'
   - debug: var=mysql_docker_configure_file
 
   - name: Copy the script that gets the MySQL port
@@ -33,19 +33,12 @@
       state: directory
       recurse: yes
     loop:
-      - {{mysql_docker_configure_file}}
-
-  - name: Create mysql file
-    file:
-      path: "{{item}}" 
-      state: touch
-    loop: 
-      - /data/db/mysql{{mysql_version}}/my.cnf
+      - "/data/db/mysql{{mysql_version}}"
 
   - name: Get mysql configure file
     shell: |
-      docker create mysql/{{mysql_docker_meta[mysql_version]}} --name mysql_test
-      docker cp mysql_test:/etc/my.cnf {{mysql_docker_configure_file}}
+      docker create --name mysql_test mysql/{{mysql_docker_meta[mysql_version]}} 
+      docker cp mysql_test:/etc/my.cnf "{{mysql_docker_configure_file}}"
       docker stop mysql_test
       docker rm mysql_test
 
@@ -146,5 +139,5 @@
     shell: docker restart mysql{{mysql_version}}
 
   - name: Check MySQL version
-    shell: sudo sh -c "{{mysql_version}} 1>> /data/logs/install_version.txt"
+    shell: sudo echo "{{mysql_version}}" |tee -a /data/logs/install_version.txt
   when: mysql_docker
