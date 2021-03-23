@@ -11,6 +11,7 @@ services:
       - /data/db/mysql{{mysql_version}}/my.cnf:/etc/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: "{{mysql_root_password}}"
+      MYSQL_ROOT_HOST: "%"
     ports:
       - {{mysql_port.stdout}}:3306
 

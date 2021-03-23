@@ -11,8 +11,12 @@
 #2 install by OS family    
 - include: "{{ansible_os_family}}.yml"
 
-- block:  
 #3 configure
+- block: 
+  - set_fact:
+      mysql_docker_configure_file: '/data/db/mysql{{mysql_version}}/my.cnf'
+  - debug: var=mysql_docker_configure_file
+
   - name: Copy the script that gets the MySQL port
     template:
       src: mysql_port_get.sh
@@ -21,12 +25,19 @@
   - name: Get mysql port 
     shell: bash /tmp/mysql_port_get.sh
     register: mysql_port
-
   - debug: var=mysql_port.stdout
 
   - name: Gets all container names
     shell: docker ps | awk '{print $NF}' | sed 1d |sort
     register: container_list_name
+
+  - name: Create mysql directory
+    file: 
+      path: "{{item}}" 
+      state: directory
+      recurse: yes
+    loop:
+      - {{mysql_docker_configure_file}}
 
   - name: Create mysql file
     file:
@@ -35,10 +46,10 @@
     loop: 
       - /data/db/mysql{{mysql_version}}/my.cnf
 
-  - nmme: Get mysql configure file
+  - name: Get mysql configure file
     shell: |
       docker run -itd mysql/{{mysql_docker_meta[mysql_version]}} --name mysql{{mysql_version}}
-      docker cp mysql{{mysql_version}}:/etc/my.cnf /data/db/mysql{{mysql_version}}/my.cnf
+      docker cp mysql{{mysql_version}}:/etc/my.cnf {{mysql_docker_configure_file}}
       docker stop mysql{{mysql_version}}
       docker rm mysql{{mysql_version}}
 
@@ -54,13 +65,12 @@
     args:
       chdir: /data/db/mysql{{mysql_version}}
       
+  - name: Get the MySQL Container IP
+    shell: docker inspect mysql{{mysql_version}} |jq -r .[].NetworkSettings.Networks.apps.IPAddress 
+    register: mysql_container_ip
+  - debug: var=mysql_container_ip.stdout
+
   when: mysql_docker 
-
-- name: Get the MySQL Container IP
-  shell: docker inspect mysql{{mysql_version}} |jq -r .[].NetworkSettings.Networks.apps.IPAddress 
-  register: mysql_container_ip
-
-- debug: var=mysql_container_ip.stdout
 
 - name: Create MySQL extra databases 
   mysql_db:
@@ -100,7 +110,7 @@
 
 - name: Change MySQL configuration default
   lineinfile:
-    dest: "{{ (mysql_docker) | ternary('[/data/db/mysql{{mysql_version}}/my.cnf]','/etc/my.cnf') }}"
+    dest: "{{ mysql_docker_configure_file if mysql_docker else '/etc/my.cnf' }}"
     regexp: '^{{ item.name }} = *'
     insertafter: '\[mysqld\]'
     firstmatch: yes
@@ -110,7 +120,7 @@
 
 - name: Change MySQL configuration extras
   lineinfile:
-    dest: "{{ (mysql_docker) | ternary('[/data/db/mysql{{mysql_version}}/my.cnf]','/etc/my.cnf') }}"
+    dest: "{{ mysql_docker_configure_file if mysql_docker else '/etc/my.cnf' }}"
     regexp: '^{{ item.name }} = *'
     insertafter: '\[mysqld\]'
     firstmatch: yes
