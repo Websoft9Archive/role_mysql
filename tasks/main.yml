@@ -11,18 +11,12 @@
 #2 install by OS family    
 - include: "{{ansible_os_family}}.yml"
 
-- name: Gets all container names
-  shell: docker ps | awk '{print $NF}' | sed 1d |sort
-  register: container_list_name
-  failed_when: false
-- debug: var=container_list_name.stdout_lines
-
 #3 configure
 - block: 
   - set_fact:
       mysql_docker_configure_file: '/data/db/mysql{{mysql_version}}/my.cnf'
   - debug: var=mysql_docker_configure_file
-  
+
   - name: Copy the script that gets the MySQL port
     template:
       src: mysql_port_get.sh
