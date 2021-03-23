@@ -65,7 +65,6 @@
     shell: docker inspect mysql{{mysql_version}} |jq -r .[].NetworkSettings.Networks.apps.IPAddress 
     register: mysql_container_ip
   - debug: var=mysql_container_ip.stdout
-
   when: mysql_docker 
 
 - name: Create MySQL extra databases 
@@ -148,4 +147,4 @@
 
   - name: Check MySQL version
     shell: sudo sh -c "{{mysql_version}} 1>> /data/logs/install_version.txt"
-  when: not mysql_docker
+  when: mysql_docker
