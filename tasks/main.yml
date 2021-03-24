@@ -26,6 +26,9 @@
     register: mysql_port
   - debug: var=mysql_port.stdout
 
+  - set_fact:
+     mysql_port: "{{mysql_port.stdout}}"
+
   - name: Create mysql directory
     file: 
       path: "{{item}}" 
@@ -64,7 +67,7 @@
     login_user: root
     login_host: "{{ item.host |default('127.0.0.1',true) }}"
     login_password: '{{mysql_root_password}}'
-    login_port: "{{ mysql_port.stdout }}"
+    login_port: "{{ mysql_port}}"
     name: "{{ item.name }}"
     encoding: "{{ item.encoding | default('utf8mb4',true) }}"
     collation: "{{ item.collation | default('utf8mb4_general_ci',true) }}"
@@ -77,7 +80,7 @@
     login_user: root
     login_host: "{{ item.host |default('127.0.0.1',true) }}"
     login_password: '{{mysql_root_password}}'
-    login_port: "{{ mysql_port.stdout }}"
+    login_port: "{{ mysql_port }}"
     name: "{{ item.name }}"
     host: "{{ item.host | default('%',true) }}"
     password: "{{ item.password | default('123456',true) }}"
