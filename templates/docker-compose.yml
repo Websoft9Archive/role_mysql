@@ -13,7 +13,7 @@ services:
       MYSQL_ROOT_PASSWORD: "{{mysql_root_password}}"
       MYSQL_ROOT_HOST: "%"
     ports:
-      - {{mysql_port.stdout}}:3306
+      - {{mysql_port}}:3306
 
 networks:
   default:
