@@ -3,6 +3,7 @@
 # Ubuntu18 支持5.7和8.0
 # Ubuntu20 支持8.0
 
+# instll_way: "package" | "docker" | False
 mysql_install_server: "package"
 
 mysql_version: "5.7"       
