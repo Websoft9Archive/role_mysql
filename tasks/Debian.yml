@@ -14,6 +14,11 @@
     keyserver: keys.gnupg.net
     id: 5072E1F5
 
+- name: Install MySQL Client
+  apt:  
+    name: [mysql-client]
+    update_cache: yes
+    
 - block:
   - name: Install MySQL
     apt:  
@@ -78,10 +83,3 @@
       - {src: '/var/log/mysql',dest: '/data/logs/mysqld'}
       - {src: '/etc/mysql/mysql.conf.d/mysqld.cnf',dest: '/etc/my.cnf'}
   when: mysql_install_server == "package"
-
-- block:
-  - name: Install MySQL Client
-    apt:  
-      name: [mysql-client]
-      update_cache: yes
-  when: mysql_install_server != "package"
