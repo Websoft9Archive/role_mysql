@@ -96,6 +96,20 @@ mysql_configuration_extras:
   - name: init-connect
     value: "'SET NAMES utf8mb8'"
 ```
+
+## Installation
+
+```
+git clone https://github.com/Websoft9/role_mysql.git
+ansible-playbook role_mysql/tests/test.yml -e mysql_version="8.0" -e mysql_install_server="docker"
+```
+
+## License
+
+[LGPL-3.0](/License.md), Additional Terms: It is not allowed to publish free or paid image based on this repository in any Cloud platform's Marketplace.
+
+Copyright (c) 2016-present, Websoft9
+
 ## FAQ
 
 
