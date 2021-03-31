@@ -5,7 +5,7 @@
 
 - name: Check mysql version support of OS
   fail: msg="The mysql version is not supported on this OS, exit!"
-  when: mysql_version not in mysql_support_version[ansible_os_family][ansible_distribution_major_version] and mysql_docker == False
+  when: mysql_version not in mysql_support_version[ansible_os_family][ansible_distribution_major_version] and mysql_install_server == "package"
     
 #2 install by OS family    
 - include: "{{ansible_os_family}}.yml"
@@ -103,7 +103,7 @@
 - block:
   - name: Change MySQL configuration default
     lineinfile:
-      dest: "{{ if mysql_install_server == "docker" mysql_docker_configure_file else '/etc/my.cnf' }}"
+      dest: "{{ if mysql_install_server == 'docker' mysql_docker_configure_file else '/etc/my.cnf' }}"
       regexp: '^{{ item.name }} = *'
       insertafter: '\[mysqld\]'
       firstmatch: yes
@@ -113,7 +113,7 @@
 
   - name: Change MySQL configuration extras
     lineinfile:
-      dest: "{{ if mysql_install_server == "docker" mysql_docker_configure_file else '/etc/my.cnf' }}"
+      dest: "{{ if mysql_install_server == 'docker' mysql_docker_configure_file else '/etc/my.cnf' }}"
       regexp: '^{{ item.name }} = *'
       insertafter: '\[mysqld\]'
       firstmatch: yes
