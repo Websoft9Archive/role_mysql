@@ -134,7 +134,7 @@
   #Enable remote connection
   - import_tasks: remote.yml
     when: mysql_remote
-  when: not mysql_docker
+  when: mysql_install_server == "package"
 
 - block:
   - name: Restart MySQL container
@@ -142,4 +142,4 @@
 
   - name: Check MySQL version
     shell: sudo echo "mysql_version:" {{mysql_version}} |tee -a /data/logs/install_version.txt
-  when: mysql_docker
+  when: mysql_install_server == "docker"

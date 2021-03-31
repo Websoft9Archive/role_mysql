@@ -77,11 +77,11 @@
       - {src: '/etc/mysql/mysql.conf.d/mysqld.cnf',dest: /data/config/mysqld.cnf}  
       - {src: '/var/log/mysql',dest: '/data/logs/mysqld'}
       - {src: '/etc/mysql/mysql.conf.d/mysqld.cnf',dest: '/etc/my.cnf'}
-  when: not mysql_docker
+  when: mysql_install_server == "package"
 
 - block:
   - name: Install MySQL Client
     apt:  
       name: [mysql-client]
       update_cache: yes
-  when: mysql_docker
+  when: mysql_install_server != "package"
