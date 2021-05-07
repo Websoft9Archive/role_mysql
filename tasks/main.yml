@@ -134,6 +134,20 @@
     register: check_mysql_service
     notify: check_mysql_service
 
+  - name: Check mysqld existed
+    shell: systemctl list-units --type=service --all |grep mysqld |wc -l
+    register: mysqld_service_exist
+  
+  - name: Get mysql service unit path
+    shell: systemctl show -p FragmentPath mysql |cut -d= -f2
+    register: mysql_service_path
+
+  - name: Add alias mysqld for mysql service
+    shell: |
+      sed -i 's/\[Install\]/&\nAlias=mysql.service mysqld.service/' {{mysql_service_path.stdout}}
+      systemctl enable mysql
+    when: mysqld_service_exist.stdout == "0"
+
   #Enable remote connection
   - import_tasks: remote.yml
     when: mysql_remote
