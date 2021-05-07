@@ -135,7 +135,7 @@
     notify: check_mysql_service
 
   - name: Check mysqld existed
-    shell: systemctl list-units --type=service --all |grep mysqld |wc -l
+    shell: systemctl list-units --type=service --all |grep -w mysqld |wc -l
     register: mysqld_service_exist
   
   - name: Get mysql service unit path
