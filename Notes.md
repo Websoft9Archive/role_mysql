@@ -1,4 +1,20 @@
+### Package Install
+
+官方提供两种安装方式：
+
+* apt/yum 仓库在线安装
+* deb/rpm 包下载安装
+
+首选仓库安装，如果仓库地址无法安装所需的版本，则通过[下载 archives ](https://downloads.mysql.com/archives/community/)来安装。
+
+举例：Ubuntu 20.04 仓库中没有提供 MySQL5.6 安装选项，怎么办？
+
+![image](https://user-images.githubusercontent.com/16741975/119587334-0dc21500-be01-11eb-8c56-9c96cdf1210d.png)
+
+下载选项中的 **Debian Linux** 和 **Linux Generic** 都可以使用，后者是 Linux  通用版本。
+
 ### mysql5.7 default my.cnf
+
 ### min install : [mysqld],[client]
 
 ```
@@ -36,6 +52,7 @@ validate_password=OFF
 USAGE => ALL ?
 
 ## Docker install MySQL
+
 ### volumes path edit
 - /data/db/mysql5.7/my.cnf:/ect/my.cnf => - /data/db/mysql5.7/my.cnf:/etc/mysql/conf.d/my.cnf 
 
