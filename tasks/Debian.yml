@@ -1,6 +1,6 @@
 - set_fact:
     mysql_socket: /run/mysqld/mysqld.sock
-    mysql_source_url: "{{mysql_deb_url.[mysql_version]}}"
+    mysql_source_url: '{{mysql_deb_url[mysql_version]}}'
 
 - name: Delete MySQL mysql.list for retry
   shell: rm -rf /etc/apt/sources.list.d/mysql.list
@@ -28,7 +28,7 @@
       echo $mysql_exists
     register: mysql_exists
 
-- debug: var=mysql_exists
+  - debug: var=mysql_exists.stdout
 
   - block:
     - name: Download and extract the mysql deb package
@@ -45,7 +45,7 @@
       args:
         chdir: /tmp
 
-    when: mysql_exists is define and mysql_exists.stdout > "0"
+    when: mysql_exists is defined and mysql_exists.stdout == ""
 
   - name: Change MySQL Directory
     shell: |
