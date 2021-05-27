@@ -14,7 +14,7 @@ mysql_docker_meta:
 
 mysql_deb_url:
   "5.6": "https://downloads.mysql.com/archives/get/p/23/file/mysql-server_5.6.51-1debian9_amd64.deb-bundle.tar"
-  "5.7": "https://downloads.mysql.com/archives/get/p/23/file/mysql-server_5.7.33-1debian10_amd64.deb-bundle.tar"
+  "5.7": "https://downloads.mysql.com/archives/get/p/23/file/mysql-server_5.7.33-1debian9_amd64.deb-bundle.tar"
   "8.0": ""
   
 mysql_rpm_url:
