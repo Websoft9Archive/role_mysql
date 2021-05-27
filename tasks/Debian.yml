@@ -1,5 +1,6 @@
 - set_fact:
     mysql_socket: /run/mysqld/mysqld.sock
+    mysql_source_url: '{{mysql_deb_url[mysql_version]}}'
 
 - name: Delete MySQL mysql.list for retry
   shell: rm -rf /etc/apt/sources.list.d/mysql.list
@@ -14,16 +15,37 @@
     keyserver: keys.gnupg.net
     id: 5072E1F5
 
-- name: Install MySQL Client
-  apt:  
-    name: [mysql-client]
-    update_cache: yes
-    
 - block:
-  - name: Install MySQL
+  - name: Install MySQL {{mysql_version}}
     apt:  
-      name: [mysql-server]
+      name: ["mysql-server-{{mysql_version}}"]
       update_cache: yes
+    failed_when: false
+
+  - name: Determine if MySQL {{mysql_version}} was successfully installed
+    shell: |
+      mysql_exists=$(command -v mysql && mysql --verion |grep -c {{mysql_version}})
+      echo $mysql_exists
+    register: mysql_exists
+
+  - debug: var=mysql_exists.stdout
+
+  - block:
+    - name: Download and extract the mysql deb package
+      unarchive:
+        src: '{{mysql_source_url}}'
+        dest: /tmp
+        remote_src: yes
+
+    - name: Use a non-interactive installation MYSQL {{mysql_version}}
+      shell: | 
+        export DEBIAN_FRONTEND=noninteractive 
+        dpkg -i *.deb
+        rm -rf *.deb
+      args:
+        chdir: /tmp
+
+    when: mysql_exists is defined and mysql_exists.stdout == ""
 
   - name: Change MySQL Directory
     shell: |
@@ -72,7 +94,6 @@
       path: /etc/mysql/debian.cnf
       state: absent
 
-
   - name: Create a MySQL  symbolic link
     file:
       src: '{{item.src}}'
@@ -82,4 +103,10 @@
       - {src: '/etc/mysql/mysql.conf.d/mysqld.cnf',dest: /data/config/mysqld.cnf}  
       - {src: '/var/log/mysql',dest: '/data/logs/mysqld'}
       - {src: '/etc/mysql/mysql.conf.d/mysqld.cnf',dest: '/etc/my.cnf'}
-  when: mysql_install_server == "package"
+  when: mysql_install_server == "package" 
+
+- name: Install MySQL Client
+  apt:  
+    name: [mysql-client]
+    update_cache: yes
+  when: not mysql_install_server
