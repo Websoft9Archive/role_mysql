@@ -28,6 +28,8 @@
       echo $mysql_exists
     register: mysql_exists
 
+- debug: var=mysql_exists
+
   - block:
     - name: Download and extract the mysql deb package
       unarchive:
@@ -43,7 +45,7 @@
       args:
         chdir: /tmp
 
-    when: mysql_exists.stdout > "0"
+    when: mysql_exists is define and mysql_exists.stdout > "0"
 
   - name: Change MySQL Directory
     shell: |
