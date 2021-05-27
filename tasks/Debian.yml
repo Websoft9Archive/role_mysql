@@ -24,7 +24,7 @@
 
   - name: Determine if MySQL {{mysql_version}} was successfully installed
     shell: |
-      mysql_exists=$(command -v mysql && mysql --verion |grep -c {{mysql_version}})
+      command -v mysql && mysql_exists=$(mysql -V |grep -c {{mysql_version}})
       echo $mysql_exists
     register: mysql_exists
 
