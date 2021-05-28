@@ -40,7 +40,6 @@
     - name: Use a non-interactive installation MYSQL {{mysql_version}}
       shell: | 
         export DEBIAN_FRONTEND=noninteractive
-        rm -rf *test*.deb
         dpkg -i *.deb
         rm -rf *.deb
       args:
