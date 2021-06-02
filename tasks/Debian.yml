@@ -89,14 +89,14 @@
       args:
         chdir: /usr/local/mysql
 
-     - name: Create link for mysql data and socket
-       file:
-         src: '{{item.src}}'
-         dest: '{{item.dest}}'
-         state: link
-       with_items: 
-         - {src: /usr/local/mysql/data/,dest: /var/lib/mysql}
-         - {src: /tmp/mysql.sock,dest: /run/mysqld/mysqld.sock}
+    - name: Create link for mysql data and socket
+      file:
+        src: '{{item.src}}'
+        dest: '{{item.dest}}'
+        state: link
+      with_items: 
+        - {src: /usr/local/mysql/data/,dest: /var/lib/mysql}
+        - {src: /tmp/mysql.sock,dest: /run/mysqld/mysqld.sock}
 
     when: mysql_exists is defined and mysql_exists.stdout == ""
 
