@@ -71,8 +71,6 @@
     - name: Get mysql cli
       shell: ls /usr/local/mysql/bin/
       register: mysql_clis
-   
-    - debug: var=mysql_cli.stdout_lines
     
     - name: Create soft link for mysql CLI
       file:
