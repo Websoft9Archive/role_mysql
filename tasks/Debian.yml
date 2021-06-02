@@ -55,12 +55,20 @@
 
     - name: Copy mysql configure file
       copy:
-        src: /usr/local/mysql/support-files/'{{item.src}}'
+        src: '/usr/local/mysql/support-files/{{item.src}}'
         dest: '{{item.dest}}'
         remote_src: yes
       with_items:
         - {src: my-default.cnf,dest: /etc/my.cnf}
         - {src: mysql.server,dest: /etc/init.d/mysql.server}
+
+    - name: Create soft link for mysql
+      file:
+        src: '/usr/local/mysql/bin/{{item}}'
+        dest: '/usr/bin/{{item}}'
+        state: link
+      with_fileglob:
+        - /usr/local/mysql/bin/*
 
     - name: Run the Script installation MYSQL {{mysql_version}}
       shell: | 
