@@ -1,3 +1,4 @@
+#
 - set_fact:
     mysql_socket: /run/mysqld/mysqld.sock
     mysql_source_url: '{{mysql_generic_url[mysql_version]}}'
