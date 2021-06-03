@@ -83,6 +83,9 @@
       shell: |
         chmod +x /etc/init.d/mysql 
         scripts/mysql_install_db --user=mysql
+        mkdir /etc/mysql/mysql.conf.d/
+        systemctl daemon-reload
+        systemctl restart mysql
       args:
         chdir: /var/lib/mysql
 
@@ -93,7 +96,6 @@
         state: link
         force: yes
       with_items: 
-        - {src: /var/lib/mysql/data/,dest: /var/lib/mysql}
         - {src: /tmp/mysql.sock,dest: /run/mysqld/mysqld.sock}
         - {src: /etc/mysql/conf.d/mysql.cnf,dest: /etc/mysql/mysql.conf.d/mysqld.cnf}
         - {src: /var/lib/mysql/data/,dest: /var/log/mysql}
@@ -102,7 +104,6 @@
 
   - name: Change MySQL Directory
     shell: |
-      systemctl daemon-reload
       systemctl stop mysql
       rm -rf /data/mysql
       ln -sf /var/lib/mysql /data/
