@@ -79,11 +79,18 @@
         state: link
       with_items: "{{mysql_clis.stdout_lines |list}}"
 
+    - name: Create dir for mysql
+      file:
+        path: '{{item}}'
+        state: directory
+      with_items:
+        - /etc/mysql/mysql.conf.d/
+        - /run/mysqld 
+
     - name: Run the Script installation MYSQL {{mysql_version}}
       shell: |
-        chmod +x /etc/init.d/mysql 
         scripts/mysql_install_db --user=mysql
-        mkdir /etc/mysql/mysql.conf.d/
+        chmod +x /etc/init.d/mysql 
         systemctl daemon-reload
         systemctl restart mysql
       args:
