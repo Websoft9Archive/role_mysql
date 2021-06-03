@@ -46,7 +46,7 @@
     - name: Download and extract the mysql package
       unarchive:
         src: '{{mysql_source_url}}'
-        dest: /var/lib/
+        dest: /usr/local
         remote_src: yes
     
     - name: Rename dir for mysql
