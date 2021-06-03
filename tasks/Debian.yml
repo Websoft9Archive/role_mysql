@@ -65,9 +65,9 @@
         dest: '{{item.dest}}'
         remote_src: yes
       with_items:
-        - {src: my-default.cnf,dest: /etc/my.cnf}
+        - {src: my-default.cnf,dest: /etc/mysql/my-default.cnf}
         - {src: mysql.server,dest: /etc/init.d/mysql}
-    
+        
     - name: Get mysql cli
       shell: ls /usr/local/mysql/bin/
       register: mysql_clis
@@ -79,14 +79,6 @@
         state: link
       with_items: "{{mysql_clis.stdout_lines |list}}"
 
-    - name: Create dir for mysql
-      file:
-        path: '{{item}}'
-        state: directory
-      with_items:
-        - /etc/mysql/mysql.conf.d/
-        - /run/mysqld 
-
     - name: Run the Script installation MYSQL {{mysql_version}}
       shell: |
         scripts/mysql_install_db --user=mysql
@@ -96,6 +88,14 @@
       args:
         chdir: /usr/local/mysql
 
+    - name: Create dir for mysql
+      file:
+        path: '{{item}}'
+        state: directory
+      with_items:
+        - /etc/mysql/mysql.conf.d/
+        - /run/mysqld 
+
     - name: Create link for mysql data and socket
       file:
         src: '{{item.src}}'
@@ -104,7 +104,7 @@
         force: yes
       with_items: 
         - {src: /tmp/mysql.sock,dest: /run/mysqld/mysqld.sock}
-        - {src: /etc/mysql/conf.d/mysql.cnf,dest: /etc/mysql/mysql.conf.d/mysqld.cnf}
+        - {src: /etc/mysql/my-default.cnf,dest: /etc/mysql/mysql.conf.d/mysqld.cnf}
         - {src: /usr/local/mysql/data/,dest: /var/log/mysql}
         - {src: /usr/local/mysql/data/,dest: /var/lib/mysql}
 
