@@ -87,7 +87,7 @@
 
     - name: MYSQL 5.7 Initial 
       shell: |
-        bin/mysqld --initialize --user=mysql
+        bin/mysqld --initialize-insecure --user=mysql
         bin/mysql_ssl_rsa_setup
       args:
         chdir: /usr/local/mysql
