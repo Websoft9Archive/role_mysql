@@ -1,2 +1,6 @@
 [mysqld]   
 
+basedir=/usr/local/mysql
+datadir=/usr/local/mysql/data
+plugin-dir=/usr/local/mysql/lib/plugin
+
