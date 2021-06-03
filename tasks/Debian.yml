@@ -91,7 +91,7 @@
         bin/mysql_ssl_rsa_setup
       args:
         chdir: /usr/local/mysql
-       when: mysql_version == "5.7"
+      when: mysql_version == "5.7"
 
     - name: Reload and Start mysql
       shell: |
