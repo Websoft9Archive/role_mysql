@@ -37,7 +37,7 @@
         shell: /bin/false
     
     - name: Delete mysql dir for sec_installation
-      shell: rm -rf /usr/local/mysql
+      shell: rm -rf /var/lib/mysql
     
     - name: Install Depend on the package
       apt: 
@@ -46,22 +46,22 @@
     - name: Download and extract the mysql package
       unarchive:
         src: '{{mysql_source_url}}'
-        dest: /usr/local/
+        dest: /var/lib/
         remote_src: yes
     
     - name: Rename dir for mysql
-      shell: mv /usr/local/mysql-* /usr/local/mysql
+      shell: mv /var/lib/mysql-* /var/lib/mysql
 
     - name: Update mysql dir permissive
       file: 
-        path: /usr/local/mysql
+        path: /var/lib/mysql
         owner: mysql
         group: mysql
         recurse: yes
 
     - name: Copy mysql configure file
       copy:
-        src: '/usr/local/mysql/support-files/{{item.src}}'
+        src: '/var/lib/mysql/support-files/{{item.src}}'
         dest: '{{item.dest}}'
         remote_src: yes
       with_items:
@@ -69,12 +69,12 @@
         - {src: mysql.server,dest: /etc/init.d/mysql}
     
     - name: Get mysql cli
-      shell: ls /usr/local/mysql/bin/
+      shell: ls /var/lib/mysql/bin/
       register: mysql_clis
     
     - name: Create soft link for mysql CLI
       file:
-        src: '/usr/local/mysql/bin/{{item}}'
+        src: '/var/lib/mysql/bin/{{item}}'
         dest: '/usr/bin/{{item}}'
         state: link
       with_items: "{{mysql_clis.stdout_lines |list}}"
@@ -84,16 +84,19 @@
         chmod +x /etc/init.d/mysql 
         scripts/mysql_install_db --user=mysql
       args:
-        chdir: /usr/local/mysql
+        chdir: /var/lib/mysql
 
     - name: Create link for mysql data and socket
       file:
         src: '{{item.src}}'
         dest: '{{item.dest}}'
         state: link
+        force: yes
       with_items: 
-        - {src: /usr/local/mysql/data/,dest: /var/lib/mysql}
+        - {src: /var/lib/mysql/data/,dest: /var/lib/mysql}
         - {src: /tmp/mysql.sock,dest: /run/mysqld/mysqld.sock}
+        - {src: /etc/mysql/conf.d/mysql.cnf,dest: /etc/mysql/mysql.conf.d/mysqld.cnf}
+        - {src: /var/lib/mysql/data/,dest: /var/log/mysql}
 
     when: mysql_exists is defined and mysql_exists.stdout == ""
 
