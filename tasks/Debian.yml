@@ -78,14 +78,26 @@
         state: link
       with_items: "{{mysql_clis.stdout_lines |list}}"
 
-    - name: Run the Script installation MYSQL {{mysql_version}}
+    - name: MYSQL 5.6 Initial 
       shell: |
-        scripts/mysql_install_db --user=mysql
+        scripts/mysql_install_db --user=mysql 
+      args:
+        chdir: /usr/local/mysql
+      when: mysql_version == "5.6"
+
+    - name: MYSQL 5.7 Initial 
+      shell: |
+        bin/mysqld --initialize --user=mysql
+        bin/mysql_ssl_rsa_setup
+      args:
+        chdir: /usr/local/mysql
+       when: mysql_version == "5.7"
+
+    - name: Reload and Start mysql
+      shell: |
         chmod +x /etc/init.d/mysql 
         systemctl daemon-reload
         systemctl restart mysql
-      args:
-        chdir: /usr/local/mysql
 
     - name: Create dir for mysql
       file:
