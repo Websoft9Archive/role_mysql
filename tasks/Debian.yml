@@ -65,7 +65,6 @@
         dest: '{{item.dest}}'
         remote_src: yes
       with_items:
-        - {src: my-default.cnf,dest: /etc/mysql/my-default.cnf}
         - {src: mysql.server,dest: /etc/init.d/mysql}
         
     - name: Get mysql cli
@@ -104,9 +103,13 @@
         force: yes
       with_items: 
         - {src: /tmp/mysql.sock,dest: /run/mysqld/mysqld.sock}
-        - {src: /etc/mysql/my-default.cnf,dest: /etc/mysql/mysql.conf.d/mysqld.cnf}
         - {src: /usr/local/mysql/data/,dest: /var/log/mysql}
         - {src: /usr/local/mysql/data/,dest: /var/lib/mysql}
+
+    - name: Copy mysql configure file
+      copy: 
+        src: mysqld.cnf
+        dest: /etc/mysql/mysql.conf.d/mysqld.cnf
 
     when: mysql_exists is defined and mysql_exists.stdout == ""
 
