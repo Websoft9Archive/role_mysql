@@ -37,7 +37,7 @@
         shell: /bin/false
     
     - name: Delete mysql dir for sec_installation
-      shell: rm -rf /var/lib/mysql
+      shell: rm -rf /usr/local/mysql
     
     - name: Install Depend on the package
       apt: 
@@ -50,18 +50,18 @@
         remote_src: yes
     
     - name: Rename dir for mysql
-      shell: mv /var/lib/mysql-* /var/lib/mysql
+      shell: mv /usr/local/mysql-* /usr/local/mysql
 
     - name: Update mysql dir permissive
       file: 
-        path: /var/lib/mysql
+        path: /usr/local/mysql
         owner: mysql
         group: mysql
         recurse: yes
 
     - name: Copy mysql configure file
       copy:
-        src: '/var/lib/mysql/support-files/{{item.src}}'
+        src: '/usr/local/mysql/support-files/{{item.src}}'
         dest: '{{item.dest}}'
         remote_src: yes
       with_items:
@@ -69,12 +69,12 @@
         - {src: mysql.server,dest: /etc/init.d/mysql}
     
     - name: Get mysql cli
-      shell: ls /var/lib/mysql/bin/
+      shell: ls /usr/local/mysql/bin/
       register: mysql_clis
     
     - name: Create soft link for mysql CLI
       file:
-        src: '/var/lib/mysql/bin/{{item}}'
+        src: '/usr/local/mysql/bin/{{item}}'
         dest: '/usr/bin/{{item}}'
         state: link
       with_items: "{{mysql_clis.stdout_lines |list}}"
@@ -87,7 +87,7 @@
         systemctl daemon-reload
         systemctl restart mysql
       args:
-        chdir: /var/lib/mysql
+        chdir: /usr/local/mysql
 
     - name: Create link for mysql data and socket
       file:
@@ -98,7 +98,8 @@
       with_items: 
         - {src: /tmp/mysql.sock,dest: /run/mysqld/mysqld.sock}
         - {src: /etc/mysql/conf.d/mysql.cnf,dest: /etc/mysql/mysql.conf.d/mysqld.cnf}
-        - {src: /var/lib/mysql/data/,dest: /var/log/mysql}
+        - {src: /usr/local/mysql/data/,dest: /var/log/mysql}
+        - {src: /usr/local/mysql/data/,dest: /var/lib/mysql}
 
     when: mysql_exists is defined and mysql_exists.stdout == ""
 
