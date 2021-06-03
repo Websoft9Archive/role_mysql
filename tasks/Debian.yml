@@ -93,11 +93,13 @@
         chdir: /usr/local/mysql
       when: mysql_version == "5.7"
 
-    - name: Reload and Start mysql
+    - name: Reload ,Start ,Enable mysql
       shell: |
         chmod +x /etc/init.d/mysql 
         systemctl daemon-reload
         systemctl restart mysql
+        systemctl enable mysql
+        /lib/systemd/systemd-sysv-install enable mysql
 
     - name: Create dir for mysql
       file:
