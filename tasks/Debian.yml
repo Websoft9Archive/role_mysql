@@ -1,6 +1,6 @@
 - set_fact:
     mysql_socket: /run/mysqld/mysqld.sock
-    mysql_source_url: '{{mysql_deb_url[mysql_version]}}'
+    mysql_source_url: '{{mysql_generic_url[mysql_version]}}'
 
 - name: Delete MySQL mysql.list for retry
   shell: rm -rf /etc/apt/sources.list.d/mysql.list
@@ -24,26 +24,106 @@
 
   - name: Determine if MySQL {{mysql_version}} was successfully installed
     shell: |
-      mysql_exists=$(command -v mysql && mysql --verion |grep -c {{mysql_version}})
+      command -v mysql && mysql_exists=$(mysql -V |grep -c {{mysql_version}})
       echo $mysql_exists
     register: mysql_exists
 
   - debug: var=mysql_exists.stdout
 
   - block:
-    - name: Download and extract the mysql deb package
+    - name: Add user mysql
+      user: 
+        name: mysql
+        shell: /bin/false
+    
+    - name: Delete mysql dir for sec_installation
+      shell: rm -rf /usr/local/mysql
+    
+    - name: Install Depend on the package
+      apt: 
+        name: [libaio1,libncurses5,libstdc++6]
+
+    - name: Download and extract the mysql package
       unarchive:
         src: '{{mysql_source_url}}'
-        dest: /tmp
+        dest: /usr/local
         remote_src: yes
+    
+    - name: Rename dir for mysql
+      shell: mv /usr/local/mysql-* /usr/local/mysql
 
-    - name: Use a non-interactive installation MYSQL {{mysql_version}}
-      shell: | 
-        export DEBIAN_FRONTEND=noninteractive
-        dpkg -i *.deb
-        rm -rf *.deb
+    - name: Update mysql dir permissive
+      file: 
+        path: /usr/local/mysql
+        owner: mysql
+        group: mysql
+        recurse: yes
+
+    - name: Copy mysql configure file
+      copy:
+        src: '/usr/local/mysql/support-files/{{item.src}}'
+        dest: '{{item.dest}}'
+        remote_src: yes
+      with_items:
+        - {src: mysql.server,dest: /etc/init.d/mysql}
+        
+    - name: Get mysql cli
+      shell: ls /usr/local/mysql/bin/
+      register: mysql_clis
+    
+    - name: Create soft link for mysql CLI
+      file:
+        src: '/usr/local/mysql/bin/{{item}}'
+        dest: '/usr/bin/{{item}}'
+        state: link
+      with_items: "{{mysql_clis.stdout_lines |list}}"
+
+    - name: MYSQL 5.6 Initial 
+      shell: |
+        scripts/mysql_install_db --user=mysql 
       args:
-        chdir: /tmp
+        chdir: /usr/local/mysql
+      when: mysql_version == "5.6"
+
+    - name: MYSQL 5.7 Initial 
+      shell: |
+        bin/mysqld --initialize-insecure --user=mysql
+        bin/mysql_ssl_rsa_setup
+      args:
+        chdir: /usr/local/mysql
+      when: mysql_version == "5.7"
+
+    - name: Reload ,Start ,Enable mysql
+      shell: |
+        chmod +x /etc/init.d/mysql 
+        systemctl daemon-reload
+        systemctl restart mysql
+        systemctl enable mysql
+        /lib/systemd/systemd-sysv-install enable mysql
+
+    - name: Create dir for mysql
+      file:
+        path: '{{item}}'
+        state: directory
+      with_items:
+        - /etc/mysql/mysql.conf.d/
+        - /run/mysqld 
+
+    - name: Create link for mysql data and socket
+      file:
+        src: '{{item.src}}'
+        dest: '{{item.dest}}'
+        state: link
+        force: yes
+      with_items: 
+        - {src: /tmp/mysql.sock,dest: /run/mysqld/mysqld.sock}
+        - {src: /usr/local/mysql/data/,dest: /var/log/mysql}
+        - {src: /usr/local/mysql/data/,dest: /var/lib/mysql}
+
+    - name: Copy mysql configure file
+      copy: 
+        src: mysqld.cnf
+        dest: /etc/mysql/mysql.conf.d/mysqld.cnf
 
     when: mysql_exists is defined and mysql_exists.stdout == ""
 
