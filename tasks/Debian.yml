@@ -31,6 +31,9 @@
   - debug: var=mysql_exists.stdout
 
   - block:
+    - name: Delete MySQL mysql.list for retry
+      shell: rm -rf /etc/apt/sources.list.d/mysql.list
+      
     - name: Add user mysql
       user: 
         name: mysql
