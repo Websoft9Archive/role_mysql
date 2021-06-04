@@ -66,7 +66,8 @@
         remote_src: yes
       with_items:
         - {src: mysql.server,dest: /etc/init.d/mysql}
-        
+
+# export PATH=$PATH:/usr/local/mysql/bin        
     - name: Get mysql cli
       shell: ls /usr/local/mysql/bin/
       register: mysql_clis
