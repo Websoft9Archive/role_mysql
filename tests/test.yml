@@ -15,7 +15,7 @@
       default: 3
 
     - name: 'mysql_input_password'
-      prompt: "\nPlease your MySQL root password: \n\nn"
+      prompt: "\nPlease your MySQL root password: \n\ndefault"
       private: no
       default: 123456
 
