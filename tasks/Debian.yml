@@ -7,17 +7,15 @@
 
 - name: import MySQL repo
   template:
-    src: mysql.list.jinja2
-    dest: /etc/apt/sources.list.d/mysql.list
-    
-- block:
-  - name: import MySQL apt key from pgp.mit.edu (do not use keys.gnupg.net  which may timeout)
-    apt_key:
-      keyserver: pgp.mit.edu
-      id: 5072E1F5
-- resue:
-  - name: import MySQL GnuPG 
-    shell: gpg --import ./templates/RPM-GPG-KEY-mysql
+    src: '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - {src: mysql.list.jinja2,dest: /etc/apt/sources.list.d/mysql.list}
+    - {src: RPM-GPG-KEY-mysql,dest: /etc/apt/sources.list.d/mysql.list}
+  when: ansible_distribution == "Debian"
+
+- name: import MySQL GnuPG 
+  shell: gpg --import /etc/apt/sources.list.d/mysql.list/RPM-GPG-KEY-mysql
 
 - block:
   - name: Install MySQL {{mysql_version}}
