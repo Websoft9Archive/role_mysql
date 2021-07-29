@@ -19,7 +19,6 @@
   - name: import MySQL GnuPG 
     shell: gpg --import ./templates/RPM-GPG-KEY-mysql
 
-
 - block:
   - name: Install MySQL {{mysql_version}}
     apt:  
