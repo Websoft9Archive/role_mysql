@@ -11,7 +11,7 @@
     dest: '/etc/apt/sources.list.d/mysql.list'
 
 - name: Import MySQL GPG-KEY
-  copy:
+  template:
     src: RPM-GPG-KEY-mysql
     dest: /etc/
         
