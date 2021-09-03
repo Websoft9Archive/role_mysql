@@ -12,8 +12,8 @@
 
 - name: Import MySQL GPG-KEY
   copy:
-    src: 'RPM-GPG-KEY-mysql'
-    dest: '/etc/'
+    src: RPM-GPG-KEY-mysql
+    dest: /etc/
         
 - name: Import MySQL GnuPG 
   shell: gpg --import /etc/RPM-GPG-KEY-mysql
