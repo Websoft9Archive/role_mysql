@@ -7,12 +7,14 @@
 
 - name: Import MySQL repo
   template:
-    src: '{{item.src}}'
-    dest: '{{item.dest}}'
-  with_items:
-    - {src: 'mysql.list.jinja2', dest: /etc/apt/sources.list.d/mysql.list}
-    - {src: 'RPM-GPG-KEY-mysql', dest: /etc/}
+    src: 'mysql.list.jinja2'
+    dest: '/etc/apt/sources.list.d/mysql.list'
 
+- name: Import MySQL GPG-KEY
+  copy:
+    src: 'RPM-GPG-KEY-mysql'
+    dest: '/etc/'
+        
 - name: Import MySQL GnuPG 
   shell: gpg --import /etc/RPM-GPG-KEY-mysql
 
