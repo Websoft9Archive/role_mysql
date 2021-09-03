@@ -23,8 +23,7 @@
     apt:  
       name: ["mysql-server-{{mysql_version}}"]
       update_cache: yes
-    failed_when: false
-
+      
   - name: Determine if MySQL {{mysql_version}} was successfully installed
     shell: |
       command -v mysql && mysql_exists=$(mysql -V |grep -c {{mysql_version}})
