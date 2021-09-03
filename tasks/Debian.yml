@@ -2,14 +2,6 @@
     mysql_socket: /run/mysqld/mysqld.sock
     mysql_source_url: '{{mysql_generic_url[mysql_version]}}'
 
-- name: Delete MySQL mysql.list for retry
-  shell: rm -rf /etc/apt/sources.list.d/mysql.list
-
-- name: Import MySQL repo
-  template:
-    src: 'mysql.list.jinja2'
-    dest: '/etc/apt/sources.list.d/mysql.list'
-
 - name: Import MySQL GPG-KEY
   template:
     src: RPM-GPG-KEY-mysql
@@ -17,7 +9,15 @@
         
 - name: Import MySQL GnuPG 
   shell: gpg --import /etc/RPM-GPG-KEY-mysql
+  
+- name: Delete MySQL mysql.list for retry
+  shell: rm -rf /etc/apt/sources.list.d/mysql.list
 
+- name: Import MySQL repo
+  template:
+    src: 'mysql.list.jinja2'
+    dest: '/etc/apt/sources.list.d/mysql.list'
+    
 - block:
   - name: Install MySQL {{mysql_version}}
     apt:  
