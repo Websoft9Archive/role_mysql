@@ -191,5 +191,4 @@
 - name: Install MySQL Client
   apt:  
     name: [mysql-client]
-    update_cache: yes
   when: not mysql_install_server
