@@ -5,25 +5,28 @@
 - name: Delete MySQL mysql.list for retry
   shell: rm -rf /etc/apt/sources.list.d/mysql.list
 
-- name: import MySQL repo
+- name: Import MySQL repo
   template:
     src: '{{item.src}}'
     dest: '{{item.dest}}'
   with_items:
     - {src: mysql.list.jinja2,dest: /etc/apt/sources.list.d/mysql.list}
     - {src: RPM-GPG-KEY-mysql,dest: /etc/}
-  when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
 
-- name: import MySQL GnuPG 
+- name: import MySQL apt key from pgp.mit.edu (do not use keys.gnupg.net  which may timeout)
+  apt_key:
+    keyserver: pgp.mit.edu
+    id: 5072E1F5
+    
+- name: Import MySQL GnuPG 
   shell: gpg --import /etc/RPM-GPG-KEY-mysql
 
 - block:
   - name: Install MySQL {{mysql_version}}
     apt:  
       name: ["mysql-server-{{mysql_version}}"]
-      update_cache: yes
     failed_when: false
-
+      
   - name: Determine if MySQL {{mysql_version}} was successfully installed
     shell: |
       command -v mysql && mysql_exists=$(mysql -V |grep -c {{mysql_version}})
@@ -71,8 +74,7 @@
         remote_src: yes
       with_items:
         - {src: mysql.server,dest: /etc/init.d/mysql}
-
-# export PATH=$PATH:/usr/local/mysql/bin        
+       
     - name: Get mysql cli
       shell: ls /usr/local/mysql/bin/
       register: mysql_clis
@@ -194,5 +196,4 @@
 - name: Install MySQL Client
   apt:  
     name: [mysql-client]
-    update_cache: yes
   when: not mysql_install_server
