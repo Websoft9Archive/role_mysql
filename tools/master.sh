@@ -68,6 +68,7 @@ if [ -f "$mysql_config_file" ];then
         sudo sed -i '/\[mysqld\]/a bind-address = 0.0.0.0' $mysql_config_file
         sudo sed -i '/\[mysqld\]/a server-id = 1' $mysql_config_file
         sudo sed -i '/\[mysqld\]/a log_bin = /var/lib/mysql/mysql-bin.log' $mysql_config_file
+	sudo rm -f /var/lib/mysql/auto.cnf
         sudo systemctl restart mysqld  
         sudo echo "mysql config file update success !"
 else
