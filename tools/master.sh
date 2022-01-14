@@ -78,7 +78,7 @@ fi
 ## Change slave uuid 
 ## master and slave use random uuid 
 
-uuid=$(mysql -uroot -p"$master_mysql_root_password" -N -e "b305688e-74e0-11ec-802f-b0227adb56a3")
+uuid=$(mysql -uroot -p"$master_mysql_root_password" -N -e "select uuid();")
 cat > /var/lib/mysql/auto.cnf <<EOF
 [auto]
 server-uuid=$uuid
