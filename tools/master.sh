@@ -76,12 +76,14 @@ else
 fi
 
 ## Change slave uuid 
-## master and slave uuid needs  to be the same
+## master and slave use random uuid 
 
-## cat > /var/lib/mysql/auto.cnf <<EOF
-## [auto]
-## server-uuid=f2d0efd6-6ab7-11e8-8fdd-fa163eda7360
-## EOF
+uuid=$(mysql -uroot -p"$master_mysql_root_password" -N -e "b305688e-74e0-11ec-802f-b0227adb56a3")
+cat > /var/lib/mysql/auto.cnf <<EOF
+[auto]
+server-uuid=$uuid
+EOF
+sudo systemctl restart mysqld 
 
 ## check user exists
 usertest="SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = '$slave_mysql_username')"
