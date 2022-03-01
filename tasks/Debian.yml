@@ -21,7 +21,7 @@
   
 - name: Import MySQL GnuPG 
   shell: gpg --import /etc/RPM-GPG-KEY-mysql
-  when: not mysql_install_server
+  when: mysql_install_server
 
 - block:
   - name: Install MySQL {{mysql_version}}
