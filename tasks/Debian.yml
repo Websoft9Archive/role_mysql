@@ -17,11 +17,9 @@
   apt_key:
     keyserver: pgp.mit.edu
     id: 5072E1F5
-  when: mysql_install_server
   
 - name: Import MySQL GnuPG 
   shell: gpg --import /etc/RPM-GPG-KEY-mysql
-  when: mysql_install_server
 
 - block:
   - name: Install MySQL {{mysql_version}}
