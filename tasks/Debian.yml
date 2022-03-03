@@ -11,16 +11,6 @@
     dest: '{{item.dest}}'
   with_items:
     - {src: mysql.list.jinja2,dest: /etc/apt/sources.list.d/mysql.list}
-    - {src: RPM-GPG-KEY-mysql,dest: /etc/}
-    
-- name: import MySQL apt key from pgp.mit.edu (do not use keys.gnupg.net keyserver.ubuntu.com  which may timeout  mysql8.0-key:3A79BD29 <mysql5.7-key:5072E1F5)
-  apt_key:
-    keyserver: keys.gnupg.net
-    id: 5072E1F5
-  
-- name: Import MySQL GnuPG 
-  shell: gpg --import /etc/RPM-GPG-KEY-mysql
-
 
 - block:
   - name: Install MySQL {{mysql_version}}
