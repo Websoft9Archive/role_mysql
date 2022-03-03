@@ -12,9 +12,9 @@
   with_items:
     - {src: mysql.list.jinja2,dest: /etc/apt/sources.list.d/mysql.list}
 
-- name: import MySQL apt key from pgp.mit.edu (do not use keys.gnupg.net keyserver.ubuntu.com  which may timeout  mysql8.0-key:3A79BD29 <mysql5.7-key:5072E1F5)
+- name: import MySQL apt key from keyserver.ubuntu.com  (do not use keys.gnupg.net and pgp.mit.edu  which may timeout)
   apt_key:
-    keyserver: keys.gnupg.net
+    keyserver: keyserver.ubuntu.com 
     id: "{{ item }}"
   loop:
      - "5072E1F5"
