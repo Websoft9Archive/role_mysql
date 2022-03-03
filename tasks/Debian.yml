@@ -11,7 +11,8 @@
     dest: '{{item.dest}}'
   with_items:
     - {src: mysql.list.jinja2,dest: /etc/apt/sources.list.d/mysql.list}
-
+    - {src: RPM-GPG-KEY-mysql,dest: /etc/}
+    
 - block:
   - name: Install MySQL {{mysql_version}}
     apt:  
