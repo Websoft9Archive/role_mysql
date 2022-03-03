@@ -5,27 +5,19 @@
 - name: Delete MySQL mysql.list for retry
   shell: rm -rf /etc/apt/sources.list.d/mysql.list
 
-- name: Import MySQL repo and upload GPG key
+- name: Import MySQL repo
   template:
     src: '{{item.src}}'
     dest: '{{item.dest}}'
   with_items:
     - {src: mysql.list.jinja2,dest: /etc/apt/sources.list.d/mysql.list}
-    - {src: RPM-GPG-KEY-mysql,dest: /etc/}
 
-- name: Import MySQL GnuPG 
-  shell: gpg --import /etc/RPM-GPG-KEY-mysql
-
-- name: import MySQL apt key from pgp.mit.edu (do not use keys.gnupg.net  which may timeout)
-  apt_key:
-    keyserver: pgp.mit.edu
-    id: 5072E1F5
-  
 - block:
   - name: Install MySQL {{mysql_version}}
     apt:  
       name: ["mysql-server-{{mysql_version}}"]
-    failed_when: false
+      allow_unauthenticated: yes
+      update_cache: yes
       
   - name: Determine if MySQL {{mysql_version}} was successfully installed
     shell: |
