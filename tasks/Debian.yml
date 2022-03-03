@@ -15,7 +15,7 @@
     
 - name: import MySQL apt key from pgp.mit.edu (do not use keys.gnupg.net keyserver.ubuntu.com  which may timeout  mysql8.0-key:3A79BD29 <mysql5.7-key:5072E1F5)
   apt_key:
-    keyserver: keyserver.ubuntu.com
+    keyserver: keys.gnupg.net
     id: 5072E1F5
   
 - name: Import MySQL GnuPG 
