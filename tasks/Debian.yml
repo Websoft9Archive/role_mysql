@@ -13,9 +13,9 @@
     - {src: mysql.list.jinja2,dest: /etc/apt/sources.list.d/mysql.list}
     - {src: RPM-GPG-KEY-mysql,dest: /etc/}
     
-- name: import MySQL apt key from pgp.mit.edu (do not use keys.gnupg.net  which may timeout)
+- name: import MySQL apt key from pgp.mit.edu (do not use keys.gnupg.net keyserver.ubuntu.com  which may timeout)
   apt_key:
-    keyserver: pgp.mit.edu
+    keyserver: keyserver.ubuntu.com
     id: 5072E1F5
   
 - name: Import MySQL GnuPG 
