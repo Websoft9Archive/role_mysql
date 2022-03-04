@@ -23,7 +23,7 @@
     apt:  
       name: ["mysql-server"]
       update_cache: yes
-    failed_when: false
+    when: mysql_version > 8
       
   - name: Determine if MySQL {{mysql_version}} was successfully installed
     shell: |
