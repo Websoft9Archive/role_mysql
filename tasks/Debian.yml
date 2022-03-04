@@ -12,7 +12,7 @@
   with_items:
     - {src: mysql.list.jinja2,dest: /etc/apt/sources.list.d/mysql.list}
 
-- name: import MySQL apt key
+- name: import MySQL apt key( why not use apt_key module, We haven't found a way to support this key:5072E1F5 )
   shell: apt-key adv --keyserver keyserver.ubuntu.com  --recv-keys "{{ item }}"
   loop:
     - "3A79BD29"
