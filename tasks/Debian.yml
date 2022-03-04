@@ -12,14 +12,11 @@
   with_items:
     - {src: mysql.list.jinja2,dest: /etc/apt/sources.list.d/mysql.list}
 
-- name: import MySQL apt key from keyserver.ubuntu.com  (do not use keys.gnupg.net and pgp.mit.edu  which may timeout)
-  apt_key:
-    keyserver: keyserver.ubuntu.com 
-    id: "{{ item }}"
+- name: import MySQL apt key
+  shell: apt-key adv --keyserver keyserver.ubuntu.com  --recv-keys "{{ item }}"
   loop:
-     - "3A79BD29"
-     - "5072E1F5"
-
+    - "3A79BD29"
+    - "5072E1F5"
 
 - block:
   - name: Install MySQL {{mysql_version}}
