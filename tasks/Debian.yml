@@ -17,8 +17,9 @@
     keyserver: keyserver.ubuntu.com 
     id: "{{ item }}"
   loop:
-     - "5072E1F5"
      - "3A79BD29"
+     - "5072E1F5"
+
 
 - block:
   - name: Install MySQL {{mysql_version}}
