@@ -22,7 +22,6 @@
   - name: Install MySQL {{mysql_version}}
     apt:  
       name: ["mysql-server-{{mysql_version}}"]
-      allow_unauthenticated: yes
       update_cache: yes
       
   - name: Determine if MySQL {{mysql_version}} was successfully installed
