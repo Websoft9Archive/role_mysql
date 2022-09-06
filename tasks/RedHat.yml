@@ -19,9 +19,9 @@
 - name: Import GPG Key
   shell: rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
   
-- name: Install MySQL Client
-  yum: 
-    name: [mysql-community-client]
+#- name: Install MySQL Client
+#  yum: 
+#    name: [mysql-community-client]
 
 - block:
   - name: Install MySQL{{ mysql_version }}
